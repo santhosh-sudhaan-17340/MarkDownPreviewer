@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Previewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .markdown-preview {
+            line-height: 1.6;
+        }
+        .markdown-preview h1 {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 0.67em;
+            margin-bottom: 0.67em;
+        }
+        .markdown-preview h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 0.83em;
+            margin-bottom: 0.83em;
+        }
+        .markdown-preview h3 {
+            font-size: 1.17em;
+            font-weight: bold;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .markdown-preview p {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .markdown-preview ul, .markdown-preview ol {
+            margin-top: 1em;
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+        .markdown-preview ul {
+            list-style-type: disc;
+        }
+        .markdown-preview ol {
+            list-style-type: decimal;
+        }
+        .markdown-preview li {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .markdown-preview code {
+            background-color: rgba(128, 128, 128, 0.1);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .markdown-preview pre {
+            background-color: rgba(128, 128, 128, 0.1);
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .markdown-preview pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .markdown-preview blockquote {
+            border-left: 4px solid rgba(128, 128, 128, 0.3);
+            padding-left: 1em;
+            margin-left: 0;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            color: rgba(128, 128, 128, 0.8);
+        }
+        .markdown-preview a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        .markdown-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+        .markdown-preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .markdown-preview table th,
+        .markdown-preview table td {
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            padding: 0.5em;
+        }
+        .markdown-preview table th {
+            background-color: rgba(128, 128, 128, 0.1);
+            font-weight: bold;
+        }
+        .markdown-preview hr {
+            border: none;
+            border-top: 2px solid rgba(128, 128, 128, 0.3);
+            margin-top: 2em;
+            margin-bottom: 2em;
+        }
+        
+        /* Dark mode styles */
+        .dark .markdown-preview code {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .dark .markdown-preview pre {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .dark .markdown-preview blockquote {
+            border-left-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .dark .markdown-preview a {
+            color: #60a5fa;
+        }
+        .dark .markdown-preview table th,
+        .dark .markdown-preview table td {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .dark .markdown-preview table th {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .dark .markdown-preview hr {
+            border-top-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 shadow-md">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Markdown Previewer</h1>
+                <div class="flex gap-2">
+                    <button id="darkModeToggle" 
+                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        🌙 Dark Mode
+                    </button>
+                    <button id="copyHtmlBtn" 
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                        📋 Copy HTML
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 container mx-auto px-4 py-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-180px)]">
+                <!-- Editor Panel -->
+                <div class="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2 font-semibold text-gray-700 dark:text-gray-200">
+                        Markdown Input
+                    </div>
+                    <textarea id="markdownInput" 
+                              class="flex-1 p-4 font-mono text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none focus:outline-none"
+                              placeholder="Type or paste your Markdown here...
+# Welcome to Markdown Previewer!
+
+## Features
+- Live preview
+- Syntax highlighting
+- Dark mode
+- Copy HTML
+
+Try writing some **bold** or *italic* text!
+
+```javascript
+console.log('Hello, World!');
+```
+
+[Visit GitHub](https://github.com)"></textarea>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2 font-semibold text-gray-700 dark:text-gray-200">
+                        Preview
+                    </div>
+                    <div id="markdownPreview" 
+                         class="flex-1 p-4 overflow-y-auto markdown-preview text-gray-900 dark:text-gray-100"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-gray-800 shadow-md mt-6">
+            <div class="container mx-auto px-4 py-3 text-center text-gray-600 dark:text-gray-400 text-sm">
+                Built with HTML, Tailwind CSS, and marked.js | Deployed on GitHub Pages
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize marked.js options
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: true,
+            mangle: false,
+            pedantic: false,
+            sanitize: false,
+            smartLists: true,
+            smartypants: false,
+        });
+
+        // Get DOM elements
+        const markdownInput = document.getElementById('markdownInput');
+        const markdownPreview = document.getElementById('markdownPreview');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+
+        // Function to update preview
+        function updatePreview() {
+            const markdownText = markdownInput.value;
+            const html = marked.parse(markdownText);
+            markdownPreview.innerHTML = html;
+        }
+
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        // Function to copy HTML
+        async function copyHtml() {
+            const html = markdownPreview.innerHTML;
+            try {
+                await navigator.clipboard.writeText(html);
+                // Show feedback
+                const originalText = copyHtmlBtn.textContent;
+                copyHtmlBtn.textContent = '✅ Copied!';
+                copyHtmlBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                copyHtmlBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                
+                setTimeout(() => {
+                    copyHtmlBtn.textContent = originalText;
+                    copyHtmlBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    copyHtmlBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy HTML:', err);
+                alert('Failed to copy HTML to clipboard');
+            }
+        }
+
+        // Event listeners
+        markdownInput.addEventListener('input', updatePreview);
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        copyHtmlBtn.addEventListener('click', copyHtml);
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check for saved dark mode preference
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                darkModeToggle.textContent = '☀️ Light Mode';
+            }
+
+            // Set default markdown text
+            const defaultMarkdown = `# Welcome to Markdown Previewer!
+
+## Features
+- Live preview as you type
+- Syntax highlighting for code
+- Dark mode support
+- Copy HTML functionality
+- Responsive design
+
+## Try it out!
+
+Type or paste your Markdown on the left, and see the live preview on the right.
+
+### Formatting Examples
+
+**Bold text** and *italic text*
+
+\`Inline code\` and code blocks:
+
+\`\`\`javascript
+function greet(name) {
+    console.log(\`Hello, \${name}!\`);
+}
+\`\`\`
+
+### Lists
+
+1. First item
+2. Second item
+3. Third item
+
+- Bullet point
+- Another point
+  - Nested point
+
+### Links and Images
+
+[Visit GitHub](https://github.com)
+
+### Blockquotes
+
+> This is a blockquote.
+> It can span multiple lines.
+
+### Tables
+
+| Feature | Supported |
+|---------|-----------|
+| Headers | ✅ |
+| Lists | ✅ |
+| Code | ✅ |
+| Tables | ✅ |
+
+---
+
+Happy writing! 🚀`;
+
+            markdownInput.value = defaultMarkdown;
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
