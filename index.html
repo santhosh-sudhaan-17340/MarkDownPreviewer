@@ -7,141 +7,355 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        .markdown-preview {
-            line-height: 1.6;
+        /* Custom gradient background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+        
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Animated gradient border */
+        @keyframes gradient-rotate {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .gradient-border {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 300% 300%;
+            animation: gradient-rotate 3s ease infinite;
+        }
+        
+        .gradient-border-inner {
+            background: white;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .dark .gradient-border-inner {
+            background: #1f2937;
+        }
+        
+        /* Smooth hover effects */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Colorful scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+        }
+        
+        /* Enhanced textarea styling */
+        #markdownInput {
+            transition: all 0.3s ease;
+        }
+        
+        #markdownInput:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Markdown preview styles */
+        .markdown-preview {
+            line-height: 1.8;
+        }
+        
         .markdown-preview h1 {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 2.25em;
+            font-weight: 800;
             margin-top: 0.67em;
             margin-bottom: 0.67em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
         .markdown-preview h2 {
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.75em;
+            font-weight: 700;
             margin-top: 0.83em;
             margin-bottom: 0.83em;
+            color: #667eea;
         }
+        
+        .dark .markdown-preview h2 {
+            color: #818cf8;
+        }
+        
         .markdown-preview h3 {
-            font-size: 1.17em;
-            font-weight: bold;
+            font-size: 1.35em;
+            font-weight: 600;
             margin-top: 1em;
             margin-bottom: 1em;
+            color: #764ba2;
         }
+        
+        .dark .markdown-preview h3 {
+            color: #a78bfa;
+        }
+        
         .markdown-preview p {
             margin-top: 1em;
             margin-bottom: 1em;
         }
+        
         .markdown-preview ul, .markdown-preview ol {
             margin-top: 1em;
             margin-bottom: 1em;
             padding-left: 2em;
         }
+        
         .markdown-preview ul {
-            list-style-type: disc;
+            list-style-type: none;
         }
+        
+        .markdown-preview ul li::before {
+            content: "▸";
+            color: #667eea;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
         .markdown-preview ol {
             list-style-type: decimal;
+            list-style-position: outside;
         }
+        
+        .markdown-preview ol li {
+            padding-left: 0.5em;
+        }
+        
         .markdown-preview li {
             margin-top: 0.5em;
             margin-bottom: 0.5em;
         }
+        
         .markdown-preview code {
-            background-color: rgba(128, 128, 128, 0.1);
-            padding: 0.2em 0.4em;
-            border-radius: 3px;
-            font-family: monospace;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
         }
+        
+        .dark .markdown-preview code {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            color: #a78bfa;
+        }
+        
         .markdown-preview pre {
-            background-color: rgba(128, 128, 128, 0.1);
-            padding: 1em;
-            border-radius: 5px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            padding: 1.25em;
+            border-radius: 8px;
             overflow-x: auto;
             margin-top: 1em;
             margin-bottom: 1em;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        
+        .dark .markdown-preview pre {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-left-color: #818cf8;
+        }
+        
         .markdown-preview pre code {
             background-color: transparent;
             padding: 0;
+            color: inherit;
+            font-weight: normal;
         }
+        
         .markdown-preview blockquote {
-            border-left: 4px solid rgba(128, 128, 128, 0.3);
+            border-left: 4px solid #667eea;
             padding-left: 1em;
             margin-left: 0;
             margin-top: 1em;
             margin-bottom: 1em;
-            color: rgba(128, 128, 128, 0.8);
+            color: #6b7280;
+            font-style: italic;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+            padding: 1em;
+            border-radius: 0 8px 8px 0;
         }
+        
+        .dark .markdown-preview blockquote {
+            border-left-color: #818cf8;
+            color: #d1d5db;
+            background: linear-gradient(90deg, rgba(129, 140, 248, 0.1) 0%, transparent 100%);
+        }
+        
         .markdown-preview a {
-            color: #3b82f6;
-            text-decoration: underline;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
         }
+        
+        .markdown-preview a:hover {
+            color: #764ba2;
+        }
+        
+        .markdown-preview a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .markdown-preview a:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .dark .markdown-preview a {
+            color: #818cf8;
+        }
+        
+        .dark .markdown-preview a:hover {
+            color: #a78bfa;
+        }
+        
         .markdown-preview img {
             max-width: 100%;
             height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        
         .markdown-preview table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 1em;
             margin-bottom: 1em;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        
         .markdown-preview table th,
         .markdown-preview table td {
-            border: 1px solid rgba(128, 128, 128, 0.3);
-            padding: 0.5em;
+            border: 1px solid #e5e7eb;
+            padding: 0.75em 1em;
         }
+        
+        .dark .markdown-preview table th,
+        .dark .markdown-preview table td {
+            border-color: #374151;
+        }
+        
         .markdown-preview table th {
-            background-color: rgba(128, 128, 128, 0.1);
-            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.05em;
         }
+        
+        .markdown-preview table tr:nth-child(even) {
+            background-color: rgba(102, 126, 234, 0.03);
+        }
+        
+        .dark .markdown-preview table tr:nth-child(even) {
+            background-color: rgba(129, 140, 248, 0.05);
+        }
+        
         .markdown-preview hr {
             border: none;
-            border-top: 2px solid rgba(128, 128, 128, 0.3);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
             margin-top: 2em;
             margin-bottom: 2em;
         }
         
-        /* Dark mode styles */
-        .dark .markdown-preview code {
-            background-color: rgba(255, 255, 255, 0.1);
+        /* Button pulse animation */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
         }
-        .dark .markdown-preview pre {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .dark .markdown-preview blockquote {
-            border-left-color: rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .dark .markdown-preview a {
-            color: #60a5fa;
-        }
-        .dark .markdown-preview table th,
-        .dark .markdown-preview table td {
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        .dark .markdown-preview table th {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .dark .markdown-preview hr {
-            border-top-color: rgba(255, 255, 255, 0.3);
+        
+        .pulse-button:hover {
+            animation: pulse-ring 1.5s infinite;
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+<body class="gradient-bg-light dark:bg-gray-900 transition-colors duration-300">
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-white dark:bg-gray-800 shadow-md">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Markdown Previewer</h1>
-                <div class="flex gap-2">
+        <header class="gradient-bg shadow-2xl">
+            <div class="container mx-auto px-6 py-5 flex justify-between items-center">
+                <h1 class="text-3xl font-extrabold text-white drop-shadow-lg flex items-center gap-3">
+                    <span class="text-4xl">✍️</span>
+                    Markdown Previewer
+                </h1>
+                <div class="flex gap-3">
                     <button id="darkModeToggle" 
-                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                            class="px-5 py-2.5 bg-white/20 backdrop-blur-md text-white rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold border border-white/30 hover:scale-105 shadow-lg">
                         🌙 Dark Mode
                     </button>
                     <button id="copyHtmlBtn" 
-                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                            class="px-5 py-2.5 bg-white text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-300 font-semibold shadow-lg hover:scale-105 pulse-button">
                         📋 Copy HTML
                     </button>
                 </div>
@@ -149,15 +363,17 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 container mx-auto px-4 py-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-180px)]">
+        <main class="flex-1 container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-180px)]">
                 <!-- Editor Panel -->
-                <div class="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2 font-semibold text-gray-700 dark:text-gray-200">
-                        Markdown Input
-                    </div>
-                    <textarea id="markdownInput" 
-                              class="flex-1 p-4 font-mono text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none focus:outline-none"
+                <div class="flex flex-col gradient-border hover-lift">
+                    <div class="gradient-border-inner flex flex-col h-full">
+                        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 px-5 py-3 font-bold text-white flex items-center gap-2 rounded-t-lg">
+                            <span class="text-xl">📝</span>
+                            <span>Markdown Input</span>
+                        </div>
+                        <textarea id="markdownInput" 
+                              class="flex-1 p-5 font-mono text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none focus:outline-none custom-scrollbar rounded-b-lg"
                               placeholder="Type or paste your Markdown here...
 # Welcome to Markdown Previewer!
 
@@ -177,20 +393,30 @@ console.log('Hello, World!');
                 </div>
 
                 <!-- Preview Panel -->
-                <div class="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2 font-semibold text-gray-700 dark:text-gray-200">
-                        Preview
+                <div class="flex flex-col gradient-border hover-lift">
+                    <div class="gradient-border-inner flex flex-col h-full">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-500 px-5 py-3 font-bold text-white flex items-center gap-2 rounded-t-lg">
+                            <span class="text-xl">👁️</span>
+                            <span>Live Preview</span>
+                        </div>
+                        <div id="markdownPreview" 
+                             class="flex-1 p-5 overflow-y-auto markdown-preview text-gray-900 dark:text-gray-100 custom-scrollbar rounded-b-lg"></div>
                     </div>
-                    <div id="markdownPreview" 
-                         class="flex-1 p-4 overflow-y-auto markdown-preview text-gray-900 dark:text-gray-100"></div>
                 </div>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white dark:bg-gray-800 shadow-md mt-6">
-            <div class="container mx-auto px-4 py-3 text-center text-gray-600 dark:text-gray-400 text-sm">
-                Built with HTML, Tailwind CSS, and marked.js | Deployed on GitHub Pages
+        <footer class="gradient-bg shadow-2xl mt-6">
+            <div class="container mx-auto px-6 py-4 text-center text-white text-sm font-medium">
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <span>Built with ❤️ using</span>
+                    <span class="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">HTML</span>
+                    <span class="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">Tailwind CSS</span>
+                    <span class="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">marked.js</span>
+                    <span>|</span>
+                    <span>🚀 Deployed on GitHub Pages</span>
+                </div>
             </div>
         </footer>
     </div>
@@ -227,6 +453,9 @@ console.log('Hello, World!');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('darkMode', isDark);
             darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+            
+            // Add a nice transition effect
+            document.body.style.transition = 'background-color 0.3s ease';
         }
 
         // Function to copy HTML
@@ -234,20 +463,27 @@ console.log('Hello, World!');
             const html = markdownPreview.innerHTML;
             try {
                 await navigator.clipboard.writeText(html);
-                // Show feedback
+                // Show feedback with colorful animation
                 const originalText = copyHtmlBtn.textContent;
+                const originalClasses = copyHtmlBtn.className;
                 copyHtmlBtn.textContent = '✅ Copied!';
-                copyHtmlBtn.classList.add('bg-green-500', 'hover:bg-green-600');
-                copyHtmlBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                copyHtmlBtn.className = 'px-5 py-2.5 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg transform scale-105';
                 
                 setTimeout(() => {
                     copyHtmlBtn.textContent = originalText;
-                    copyHtmlBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
-                    copyHtmlBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                    copyHtmlBtn.className = originalClasses;
                 }, 2000);
             } catch (err) {
                 console.error('Failed to copy HTML:', err);
-                alert('Failed to copy HTML to clipboard');
+                const originalText = copyHtmlBtn.textContent;
+                const originalClasses = copyHtmlBtn.className;
+                copyHtmlBtn.textContent = '❌ Failed';
+                copyHtmlBtn.className = 'px-5 py-2.5 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg';
+                
+                setTimeout(() => {
+                    copyHtmlBtn.textContent = originalText;
+                    copyHtmlBtn.className = originalClasses;
+                }, 2000);
             }
         }
 
