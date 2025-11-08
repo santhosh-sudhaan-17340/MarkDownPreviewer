@@ -3,175 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Previewer - Premium Editor</title>
+    <title>Vice City - The Game</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
-    <!-- Highlight.js for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- html2pdf for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <h1 class="logo">
-                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                    Markdown Previewer
-                </h1>
-            </div>
-            <div class="header-right">
-                <div class="toolbar">
-                    <button id="importBtn" class="btn btn-icon" title="Import file (Ctrl+O)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/>
-                            <line x1="12" y1="3" x2="12" y2="15"/>
-                        </svg>
-                    </button>
-                    <input type="file" id="fileInput" accept=".md,.txt" style="display: none;">
-
-                    <button id="exportMdBtn" class="btn btn-icon" title="Export as Markdown (Ctrl+S)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                    </button>
-
-                    <button id="exportPdfBtn" class="btn btn-icon" title="Export as PDF (Ctrl+P)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                        </svg>
-                    </button>
-
-                    <div class="separator"></div>
-
-                    <button id="undoBtn" class="btn btn-icon" title="Undo (Ctrl+Z)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 7v6h6"/>
-                            <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/>
-                        </svg>
-                    </button>
-
-                    <button id="redoBtn" class="btn btn-icon" title="Redo (Ctrl+Y)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 7v6h-6"/>
-                            <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/>
-                        </svg>
-                    </button>
-
-                    <div class="separator"></div>
-
-                    <button id="themeToggle" class="btn btn-icon" title="Toggle theme (Ctrl+T)">
-                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"/>
-                            <line x1="12" y1="1" x2="12" y2="3"/>
-                            <line x1="12" y1="21" x2="12" y2="23"/>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                            <line x1="1" y1="12" x2="3" y2="12"/>
-                            <line x1="21" y1="12" x2="23" y2="12"/>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
-                        <svg class="moon-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                    </button>
+    <div id="game-container">
+        <!-- Main Menu -->
+        <div id="main-menu" class="menu active">
+            <div class="menu-content">
+                <h1 class="game-title">VICE CITY</h1>
+                <p class="game-subtitle">Welcome to Paradise</p>
+                <div class="menu-buttons">
+                    <button id="start-btn" class="menu-btn">START GAME</button>
+                    <button id="controls-btn" class="menu-btn">CONTROLS</button>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="editor-container">
-                <div class="panel-header">
-                    <h2>Editor</h2>
-                    <span class="status-indicator" id="saveStatus">Autosaved</span>
-                </div>
-                <textarea id="editor" class="editor" placeholder="Start typing your Markdown here..."></textarea>
-            </div>
-
-            <div class="resize-handle" id="resizeHandle"></div>
-
-            <div class="preview-container">
-                <div class="panel-header">
-                    <h2>Preview</h2>
-                </div>
-                <div id="preview" class="preview"></div>
-            </div>
-        </main>
-
-        <!-- Keyboard Shortcuts Modal -->
-        <div id="shortcutsModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Keyboard Shortcuts</h2>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="shortcut-group">
-                        <h3>File Operations</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>O</kbd>
-                            <span>Import file</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>S</kbd>
-                            <span>Export as Markdown</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>P</kbd>
-                            <span>Export as PDF</span>
-                        </div>
+        <!-- Controls Screen -->
+        <div id="controls-menu" class="menu">
+            <div class="menu-content">
+                <h2 class="menu-title">CONTROLS</h2>
+                <div class="controls-list">
+                    <div class="control-item">
+                        <span class="control-key">WASD / Arrow Keys</span>
+                        <span class="control-desc">Move / Drive</span>
                     </div>
-                    <div class="shortcut-group">
-                        <h3>Editor</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>Z</kbd>
-                            <span>Undo</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>Y</kbd>
-                            <span>Redo</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>B</kbd>
-                            <span>Bold</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>I</kbd>
-                            <span>Italic</span>
-                        </div>
+                    <div class="control-item">
+                        <span class="control-key">E / Enter</span>
+                        <span class="control-desc">Enter / Exit Vehicle</span>
                     </div>
-                    <div class="shortcut-group">
-                        <h3>View</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>T</kbd>
-                            <span>Toggle theme</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>/</kbd>
-                            <span>Show shortcuts</span>
-                        </div>
+                    <div class="control-item">
+                        <span class="control-key">Space</span>
+                        <span class="control-desc">Horn (in vehicle)</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="control-key">ESC</span>
+                        <span class="control-desc">Pause Menu</span>
+                    </div>
+                </div>
+                <button id="back-btn" class="menu-btn">BACK</button>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- HUD -->
+        <div id="hud" class="hud hidden">
+            <div class="hud-top">
+                <div class="hud-item">
+                    <span class="hud-label">HEALTH</span>
+                    <div class="health-bar">
+                        <div id="health-fill" class="health-fill"></div>
+                    </div>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">MONEY</span>
+                    <span id="money-value" class="hud-value">$0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">WANTED</span>
+                    <div id="wanted-stars" class="wanted-stars"></div>
+                </div>
+            </div>
+
+            <div class="hud-bottom">
+                <div id="mission-info" class="mission-info hidden">
+                    <h3 id="mission-title" class="mission-title"></h3>
+                    <p id="mission-desc" class="mission-desc"></p>
+                </div>
+                <div id="vehicle-info" class="vehicle-info hidden">
+                    <span class="vehicle-name" id="vehicle-name"></span>
+                    <div class="speed-bar">
+                        <div id="speed-fill" class="speed-fill"></div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-menu" class="menu">
+            <div class="menu-content">
+                <h2 class="menu-title">PAUSED</h2>
+                <div class="menu-buttons">
+                    <button id="resume-btn" class="menu-btn">RESUME</button>
+                    <button id="restart-btn" class="menu-btn">RESTART</button>
+                    <button id="quit-btn" class="menu-btn">QUIT TO MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Complete -->
+        <div id="mission-complete" class="overlay hidden">
+            <div class="overlay-content">
+                <h2 class="overlay-title">MISSION COMPLETE</h2>
+                <p id="reward-text" class="overlay-text"></p>
+                <button id="continue-btn" class="menu-btn">CONTINUE</button>
+            </div>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>

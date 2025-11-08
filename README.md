@@ -1,48 +1,89 @@
-# 📝 Markdown Previewer
+# Vice City - Browser Game
 
-A premium, full-featured Markdown editor with real-time preview, built with vanilla JavaScript. Experience fluid, interactive Markdown editing with a beautiful UI and powerful features.
+A basic Vice City-inspired browser game built with HTML5 Canvas and vanilla JavaScript. Drive around a neon-lit city, complete missions, and experience the 80s aesthetic!
 
-![Markdown Previewer](https://img.shields.io/badge/markdown-editor-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+## Features
 
-## ✨ Features
+### Gameplay
+- **Top-down driving** - Classic GTA-style perspective
+- **Vehicle system** - Enter/exit multiple vehicle types
+- **Open world** - Explore a procedurally generated city
+- **Mission system** - Complete objectives to earn money
+- **Dynamic HUD** - Health, money, wanted level, and speedometer
 
-### Core Functionality
-- **Live Preview** - See your Markdown rendered in real-time as you type
-- **GitHub-Flavored Markdown** - Full GFM support including tables, task lists, and strikethrough
-- **Syntax Highlighting** - Beautiful code blocks with automatic language detection
-- **Synchronized Scrolling** - Editor and preview scroll together seamlessly
+### Vehicles
+- **Cheetah** - Fast sports car (pink)
+- **Sentinel** - Luxury sedan (cyan)
+- **Phoenix** - Muscle car (gold)
+- **Sabre** - Classic car (orange)
 
-### Editor Features
-- **Undo/Redo** - Full history support with 50-level undo stack
-- **Autosave** - Your work is automatically saved to local storage
-- **File Import** - Load .md and .txt files directly
-- **Export Options** - Save as Markdown (.md) or PDF
+### City Features
+- Grid-based road system
+- Randomly generated buildings with neon outlines
+- Animated windows for night-time effect
+- Collision detection
 
-### UI/UX
-- **Dual Themes** - Switch between light and dark mode
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- **Premium Animations** - Smooth transitions and delightful micro-interactions
-- **Resizable Panels** - Adjust editor and preview widths to your preference
-- **Keyboard Shortcuts** - Speed up your workflow with powerful shortcuts
+## Controls
 
-### Performance
-- **Debounced Rendering** - Optimized for large files without lag
-- **Local Storage** - Instant load times with persistent content
-- **Efficient Updates** - Smart re-rendering only when needed
+| Key | Action |
+|-----|--------|
+| **WASD / Arrow Keys** | Move player / Drive vehicle |
+| **E / Enter** | Enter/Exit vehicle |
+| **Space** | Horn (when in vehicle) |
+| **ESC** | Pause menu |
 
-## 🚀 Getting Started
+## How to Play
 
-### Quick Start
+1. Open `index.html` in your web browser
+2. Click **START GAME** from the main menu
+3. Use WASD or Arrow keys to move your character
+4. Walk up to a vehicle and press **E** or **Enter** to get in
+5. Drive around and complete the mission
+6. Reach maximum speed to complete the "Street Racer" mission
 
-1. **Clone or download** this repository
-2. **Open `index.html`** in your web browser
-3. **Start typing** Markdown in the editor
-4. **See the magic** happen in real-time!
+## Game Mechanics
 
-No build process, no dependencies to install - just open and use!
+### On Foot
+- Move in any direction using WASD or arrow keys
+- Walk up to vehicles to enter them
+- Avoid buildings (they block your path)
 
-### Browser Compatibility
+### Driving
+- Accelerate with W/Up
+- Reverse with S/Down
+- Steer with A/Left and D/Right
+- Exit vehicle with E/Enter
+- Speed is shown in the bottom-right HUD
+
+### Missions
+- **Street Racer**: Reach max speed in any vehicle (Reward: $1000)
+- More missions coming soon!
+
+## Technical Details
+
+Built with:
+- **HTML5 Canvas** for rendering
+- **Vanilla JavaScript** for game logic
+- **CSS3** for UI and Vice City neon aesthetic
+- No external libraries or frameworks
+
+### Game Systems
+- Game loop with delta time for smooth movement
+- Camera system that follows the player
+- Collision detection with buildings
+- Vehicle physics with acceleration and turning
+- Mission tracking and completion
+
+## Vice City Aesthetic
+
+The game features:
+- **Neon colors**: Hot pink (#FF1493) and cyan (#00FFFF)
+- **Retro gradient backgrounds**: Purple to pink gradient skies
+- **Glowing text effects**: Neon text shadows throughout
+- **80s style HUD**: Retro UI with glowing borders
+- **Synthwave vibes**: Color palette inspired by 1980s Miami
+
+## Browser Compatibility
 
 Works in all modern browsers:
 - Chrome/Edge 90+
@@ -50,220 +91,38 @@ Works in all modern browsers:
 - Safari 14+
 - Opera 76+
 
-## ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+O` | Import file |
-| `Ctrl+S` | Export as Markdown |
-| `Ctrl+P` | Export as PDF |
-| `Ctrl+Z` | Undo |
-| `Ctrl+Y` | Redo |
-| `Ctrl+B` | Bold text |
-| `Ctrl+I` | Italic text |
-| `Ctrl+T` | Toggle theme |
-| `Ctrl+/` | Show keyboard shortcuts |
-
-*Note: Use `Cmd` instead of `Ctrl` on macOS*
-
-## 📚 Markdown Support
-
-### Text Formatting
-- **Bold**: `**text**` or `__text__`
-- *Italic*: `*text*` or `_text_`
-- ~~Strikethrough~~: `~~text~~`
-- `Inline code`: `` `code` ``
-
-### Headings
-```markdown
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
-```
-
-### Lists
-
-**Unordered:**
-```markdown
-- Item 1
-- Item 2
-  - Nested item
-```
-
-**Ordered:**
-```markdown
-1. First
-2. Second
-3. Third
-```
-
-**Task Lists:**
-```markdown
-- [x] Completed task
-- [ ] Incomplete task
-```
-
-### Code Blocks
-
-````markdown
-```javascript
-function hello() {
-    console.log("Hello, World!");
-}
-```
-````
-
-### Tables
-
-```markdown
-| Header 1 | Header 2 |
-|----------|----------|
-| Cell 1   | Cell 2   |
-```
-
-### Links & Images
-
-```markdown
-[Link text](https://example.com)
-![Alt text](image-url.jpg)
-```
-
-### Blockquotes
-
-```markdown
-> This is a quote
->
-> — Author
-```
-
-### Horizontal Rules
-
-```markdown
----
-```
-
-## 🎨 Themes
-
-The app includes two beautiful themes:
-
-- **Light Theme** - Clean and professional
-- **Dark Theme** - Easy on the eyes for extended sessions
-
-Switch between themes using the theme toggle button or press `Ctrl+T`.
-
-## 💾 Data Persistence
-
-All your content is automatically saved to your browser's local storage:
-
-- **Autosave** - Triggered 1 second after you stop typing
-- **Persistent** - Content survives browser restarts
-- **Privacy** - Everything stays on your device
-
-## 📱 Responsive Design
-
-The app adapts to your screen size:
-
-- **Desktop** - Side-by-side editor and preview with resizable panels
-- **Tablet** - Optimized layout with touch-friendly controls
-- **Mobile** - Stacked layout with easy switching between editor and preview
-
-## 🏗️ Architecture
-
-Built with a modular, component-based approach:
+## File Structure
 
 ```
-MarkDownPreviewer/
-├── index.html          # Main HTML structure
-├── styles.css          # Complete styling with CSS variables
-├── app.js              # Application logic and state management
-└── README.md           # Documentation
+.
+├── index.html          # Game HTML and UI
+├── styles.css          # Vice City themed styles
+├── game.js             # Game engine and logic
+└── README.md           # This file
 ```
 
-### Key Components
+## Future Enhancements
 
-1. **State Management** - Centralized app state
-2. **Event System** - Clean event delegation
-3. **Storage Layer** - LocalStorage abstraction
-4. **Render Engine** - Optimized Markdown parsing
-5. **Theme System** - CSS variables for easy theming
+Potential additions:
+- [ ] More mission types (delivery, racing, combat)
+- [ ] Pedestrians and traffic
+- [ ] Sound effects and music
+- [ ] Weapon system
+- [ ] Save/load game state
+- [ ] Mobile touch controls
+- [ ] More vehicle types
+- [ ] Day/night cycle
+- [ ] Police chase system
+- [ ] Shops and businesses
 
-## 🔧 Technologies Used
+## Credits
 
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS Grid and Flexbox
-- **Vanilla JavaScript** - No framework dependencies
-- **Marked.js** - Markdown parsing (v11.1.1)
-- **Highlight.js** - Syntax highlighting (v11.9.0)
-- **html2pdf.js** - PDF export functionality (v0.10.1)
+Inspired by the classic GTA: Vice City game by Rockstar Games. This is a fan tribute built for educational purposes.
 
-## 🚀 Performance Optimizations
+## License
 
-- **Debounced rendering** - Prevents excessive re-renders
-- **Lazy syntax highlighting** - Only highlights visible code blocks
-- **Efficient state management** - Minimal re-renders
-- **Optimized selectors** - Fast DOM queries
-- **CSS containment** - Improved paint performance
-
-## 🎯 Use Cases
-
-Perfect for:
-
-- 📖 Writing documentation
-- 📝 Taking notes
-- 📄 Creating README files
-- 📧 Drafting emails
-- 📊 Creating reports
-- 🎓 Educational content
-- 💼 Technical writing
-
-## 🔮 Future Enhancements
-
-Potential features for future versions:
-
-- [ ] LaTeX/Math support
-- [ ] Diagram rendering (Mermaid)
-- [ ] Collaborative editing
-- [ ] Cloud sync
-- [ ] Custom themes
-- [ ] Plugin system
-- [ ] Vim/Emacs keybindings
-- [ ] Multiple document tabs
-- [ ] Version history
-- [ ] Spell checker
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- **Marked.js** - For excellent Markdown parsing
-- **Highlight.js** - For beautiful syntax highlighting
-- **html2pdf.js** - For PDF export functionality
-- The open-source community for inspiration
-
-## 📧 Support
-
-If you encounter any issues or have questions:
-
-1. Check the keyboard shortcuts (`Ctrl+/`)
-2. Review this README
-3. Open an issue on GitHub
+This project is open source and available for educational purposes.
 
 ---
 
-**Made with ❤️ for the Markdown community**
-
-Happy writing! 🚀
+**Welcome to Vice City. Time to make some money!** 🌴🌆💰
