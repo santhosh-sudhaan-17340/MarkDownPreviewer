@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcel Locker - Smart Delivery System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>📦 Parcel Locker</h1>
+                <nav>
+                    <a href="#" class="nav-link active" data-view="home">Home</a>
+                    <a href="#" class="nav-link" data-view="find">Find Locker</a>
+                    <a href="#" class="nav-link" data-view="track">Track Parcel</a>
+                    <a href="#" class="nav-link" data-view="pickup">Pickup</a>
+                    <a href="/admin" class="nav-link">Admin</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Home View -->
+        <section id="home" class="view active">
+            <div class="hero">
+                <div class="container">
+                    <h2>Smart Parcel Lockers</h2>
+                    <p>Secure, 24/7 parcel delivery and pickup at your convenience</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="showView('find')">Find a Locker</button>
+                        <button class="btn btn-secondary" onclick="showView('track')">Track Your Parcel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure Storage</h3>
+                        <p>Your parcels are stored safely in our monitored smart lockers</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏰</div>
+                        <h3>24/7 Access</h3>
+                        <p>Pick up your parcels anytime that suits you</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3>Convenient Locations</h3>
+                        <p>Find lockers near your home, work, or commute</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Easy Pickup</h3>
+                        <p>Simple 6-digit code for instant access</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Find Locker View -->
+        <section id="find" class="view">
+            <div class="container">
+                <h2>Find a Locker</h2>
+                <div class="search-box">
+                    <input type="text" id="citySearch" placeholder="Enter city name...">
+                    <select id="sizeFilter">
+                        <option value="">Any Size</option>
+                        <option value="SMALL">Small</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LARGE">Large</option>
+                        <option value="XLARGE">Extra Large</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="searchLockers()">Search</button>
+                </div>
+
+                <div id="locationsResult" class="locations-grid"></div>
+            </div>
+        </section>
+
+        <!-- Track Parcel View -->
+        <section id="track" class="view">
+            <div class="container">
+                <h2>Track Your Parcel</h2>
+                <div class="track-box">
+                    <input type="text" id="trackingNumber" placeholder="Enter tracking number...">
+                    <button class="btn btn-primary" onclick="trackParcel()">Track</button>
+                </div>
+
+                <div id="trackingResult" class="tracking-result"></div>
+            </div>
+        </section>
+
+        <!-- Pickup View -->
+        <section id="pickup" class="view">
+            <div class="container">
+                <h2>Pick Up Your Parcel</h2>
+                <div class="pickup-box">
+                    <div class="form-group">
+                        <label>Pickup Code</label>
+                        <input type="text" id="pickupCode" placeholder="Enter 6-digit code" maxlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="pickupPhone" placeholder="Your phone number">
+                    </div>
+                    <button class="btn btn-primary btn-large" onclick="pickupParcel()">Unlock Locker</button>
+                </div>
+
+                <div id="pickupResult" class="pickup-result"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Parcel Locker Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="app-user.js"></script>
+</body>
+</html>

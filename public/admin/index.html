@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Parcel Locker Management</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>📦 Parcel Locker</h1>
+                <p>Admin Portal</p>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-section="dashboard">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </button>
+                <button class="nav-item" data-section="health">
+                    <span class="icon">🏥</span>
+                    Health Checks
+                </button>
+                <button class="nav-item" data-section="overfill">
+                    <span class="icon">⚠️</span>
+                    Overfill Report
+                </button>
+                <button class="nav-item" data-section="optimization">
+                    <span class="icon">🎯</span>
+                    Optimization
+                </button>
+                <button class="nav-item" data-section="expired">
+                    <span class="icon">⏰</span>
+                    Expired Parcels
+                </button>
+                <button class="nav-item" data-section="lockers">
+                    <span class="icon">🔧</span>
+                    Manage Lockers
+                </button>
+                <button class="nav-item" data-section="audit">
+                    <span class="icon">📝</span>
+                    Audit Logs
+                </button>
+            </nav>
+
+            <div class="user-info">
+                <div class="user-avatar">👨‍💼</div>
+                <div class="user-details">
+                    <div id="userName">Admin User</div>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <h2 id="sectionTitle">Dashboard</h2>
+                    <p id="sectionSubtitle">Overview of parcel locker system</p>
+                </div>
+                <div class="header-right">
+                    <button id="refreshBtn" class="btn btn-secondary">
+                        <span>🔄</span> Refresh
+                    </button>
+                    <div class="last-updated">
+                        Last updated: <span id="lastUpdated">Never</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="activeLockers">-</div>
+                            <div class="stat-label">Active Lockers</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="parcelsInLockers">-</div>
+                            <div class="stat-label">Parcels in Lockers</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="pickupsToday">-</div>
+                            <div class="stat-label">Pickups Today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="expiredParcels">-</div>
+                            <div class="stat-label">Expired Parcels</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Capacity Overview</h3>
+                        <div id="capacityOverview" class="table-container">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Checks Section -->
+            <section id="health" class="content-section">
+                <div class="card">
+                    <h3>Locker Health Status</h3>
+                    <div id="healthStatus" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Lockers with Issues</h3>
+                    <div id="lockerIssues" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Overfill Report Section -->
+            <section id="overfill" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Overfill Report</h3>
+                        <div class="controls">
+                            <label for="thresholdSelect">Threshold:</label>
+                            <select id="thresholdSelect" class="form-select">
+                                <option value="60">60%</option>
+                                <option value="70">70%</option>
+                                <option value="80" selected>80%</option>
+                                <option value="90">90%</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="overfillData" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Optimization Section -->
+            <section id="optimization" class="content-section">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="expansion">Expansion Analysis</button>
+                    <button class="tab-btn" data-tab="slotsize">Slot Size Optimization</button>
+                    <button class="tab-btn" data-tab="peakhours">Peak Hours</button>
+                    <button class="tab-btn" data-tab="maintenance">Maintenance Schedule</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="expansion" class="tab-pane active">
+                        <div class="card">
+                            <h3>City Expansion Priority</h3>
+                            <div id="expansionData" class="table-container">
+                                <div class="loading">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="slotsize" class="tab-pane">
+                        <div class="card">
+                            <h3>Slot Size Distribution Recommendations</h3>
+                            <div id="slotsizeData" class="table-container">
+                                <div class="loading">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="peakhours" class="tab-pane">
+                        <div class="card">
+                            <h3>Peak Hours Analysis</h3>
+                            <div id="peakhoursData" class="table-container">
+                                <div class="loading">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="maintenance" class="tab-pane">
+                        <div class="card">
+                            <h3>Maintenance Schedule Optimization</h3>
+                            <div id="maintenanceData" class="table-container">
+                                <div class="loading">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Expired Parcels Section -->
+            <section id="expired" class="content-section">
+                <div class="card">
+                    <h3>Expired Parcels Needing Removal</h3>
+                    <div id="expiredParcelsData" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Manage Lockers Section -->
+            <section id="lockers" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Locker Management</h3>
+                        <button id="addLockerBtn" class="btn btn-primary">+ Add New Locker</button>
+                    </div>
+                    <div id="lockersData" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audit Logs Section -->
+            <section id="audit" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Audit Logs</h3>
+                        <div class="controls">
+                            <select id="auditEntityFilter" class="form-select">
+                                <option value="">All Entities</option>
+                                <option value="locker">Locker</option>
+                                <option value="slot">Slot</option>
+                                <option value="parcel">Parcel</option>
+                                <option value="reservation">Reservation</option>
+                            </select>
+                            <select id="auditActionFilter" class="form-select">
+                                <option value="">All Actions</option>
+                                <option value="CREATE">Create</option>
+                                <option value="UPDATE">Update</option>
+                                <option value="DELETE">Delete</option>
+                                <option value="RESERVE">Reserve</option>
+                                <option value="PICKUP">Pickup</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="auditData" class="table-container">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
