@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Payment App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>P2P Payment App</h1>
+            <p class="subtitle">Secure UPI-like instant transfers</p>
+        </header>
+
+        <!-- Login/Register Section -->
+        <div id="auth-section" class="section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                <button class="tab-btn" onclick="showTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="form-container">
+                <h2>Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="form-container" style="display: none;">
+                <h2>Register</h2>
+                <form onsubmit="handleRegister(event)">
+                    <input type="text" id="reg-fullname" placeholder="Full Name" required>
+                    <input type="email" id="reg-email" placeholder="Email" required>
+                    <input type="tel" id="reg-phone" placeholder="Phone (10 digits)" pattern="[0-9]{10}" required>
+                    <input type="password" id="reg-password" placeholder="Password (min 8 chars)" minlength="8" required>
+                    <input type="password" id="reg-pin" placeholder="Transaction PIN (4-6 digits)" pattern="[0-9]{4,6}" required>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="section" style="display: none;">
+            <div class="user-info">
+                <h2>Welcome, <span id="user-name"></span></h2>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" onclick="showDashboard('payment')">Make Payment</button>
+                <button class="dashboard-tab" onclick="showDashboard('qr')">QR Payment</button>
+                <button class="dashboard-tab" onclick="showDashboard('transactions')">Transactions</button>
+                <button class="dashboard-tab" onclick="showDashboard('disputes')">Disputes</button>
+            </div>
+
+            <!-- Payment Section -->
+            <div id="payment-dashboard" class="dashboard-content">
+                <h3>Make Payment</h3>
+                <form onsubmit="handlePayment(event)" class="payment-form">
+                    <input type="text" id="payment-sender" placeholder="Your Account ID" required>
+                    <input type="text" id="payment-receiver" placeholder="Receiver Account ID" required>
+                    <input type="number" id="payment-amount" placeholder="Amount" step="0.01" required>
+                    <input type="text" id="payment-desc" placeholder="Description (optional)">
+                    <input type="password" id="payment-pin" placeholder="Transaction PIN" pattern="[0-9]{4,6}" required>
+                    <button type="submit" class="btn btn-primary">Send Money</button>
+                </form>
+                <div class="info-box">
+                    <h4>Features:</h4>
+                    <ul>
+                        <li>Instant transfers with fraud detection</li>
+                        <li>Automatic retry on failure</li>
+                        <li>Multi-bank support</li>
+                        <li>Secure PIN-based authorization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- QR Payment Section -->
+            <div id="qr-dashboard" class="dashboard-content" style="display: none;">
+                <h3>QR Code Payment</h3>
+
+                <div class="qr-section">
+                    <h4>Generate QR Code</h4>
+                    <form onsubmit="generateQR(event)">
+                        <input type="text" id="qr-account" placeholder="Your Account ID" required>
+                        <input type="number" id="qr-amount" placeholder="Amount (optional for dynamic QR)" step="0.01">
+                        <input type="text" id="qr-desc" placeholder="Description (optional)">
+                        <input type="number" id="qr-expires" placeholder="Expires in (minutes, optional)">
+                        <button type="submit" class="btn btn-primary">Generate QR</button>
+                    </form>
+                    <div id="qr-display" class="qr-display"></div>
+                </div>
+
+                <div class="qr-section">
+                    <h4>Pay via QR Code</h4>
+                    <form onsubmit="payViaQR(event)">
+                        <textarea id="qr-data" placeholder="Paste QR Data JSON" rows="4" required></textarea>
+                        <input type="text" id="qr-pay-sender" placeholder="Your Account ID" required>
+                        <input type="number" id="qr-pay-amount" placeholder="Amount (for dynamic QR)" step="0.01">
+                        <input type="password" id="qr-pay-pin" placeholder="Transaction PIN" pattern="[0-9]{4,6}" required>
+                        <button type="submit" class="btn btn-primary">Pay Now</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Transactions Section -->
+            <div id="transactions-dashboard" class="dashboard-content" style="display: none;">
+                <h3>Transaction History</h3>
+                <button onclick="loadTransactions()" class="btn btn-secondary">Refresh</button>
+                <div id="transactions-list" class="transactions-list"></div>
+            </div>
+
+            <!-- Disputes Section -->
+            <div id="disputes-dashboard" class="dashboard-content" style="display: none;">
+                <h3>Dispute Management</h3>
+
+                <div class="dispute-section">
+                    <h4>Raise a Dispute</h4>
+                    <form onsubmit="createDispute(event)">
+                        <input type="text" id="dispute-txn" placeholder="Transaction ID" required>
+                        <select id="dispute-type" required>
+                            <option value="">Select Dispute Type</option>
+                            <option value="UNAUTHORIZED">Unauthorized Transaction</option>
+                            <option value="AMOUNT_MISMATCH">Amount Mismatch</option>
+                            <option value="NOT_RECEIVED">Payment Not Received</option>
+                            <option value="DUPLICATE">Duplicate Transaction</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                        <textarea id="dispute-desc" placeholder="Description (min 10 chars)" rows="3" required></textarea>
+                        <button type="submit" class="btn btn-primary">Submit Dispute</button>
+                    </form>
+                </div>
+
+                <div class="dispute-section">
+                    <h4>My Disputes</h4>
+                    <button onclick="loadDisputes()" class="btn btn-secondary">Refresh</button>
+                    <div id="disputes-list" class="disputes-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
