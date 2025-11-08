@@ -1,0 +1,371 @@
+.food-log-page {
+  max-width: 1200px;
+}
+
+.food-log-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.date-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.add-food-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.add-food-btn:hover {
+  background: var(--primary-dark);
+}
+
+.nutrition-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.nutrition-card {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.nutrition-card h3 {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.nutrition-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.nutrition-card span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meal-section {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.meal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.meal-calories {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.meal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meal-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.food-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.food-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.barcode-icon,
+.camera-icon {
+  color: var(--primary);
+}
+
+.food-serving {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.food-nutrition {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.delete-btn {
+  padding: 0.5rem;
+  color: var(--danger);
+  background: transparent;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.no-meals {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-secondary);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.meal-type-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.meal-type-btn {
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.meal-type-btn:hover {
+  border-color: var(--primary);
+}
+
+.meal-type-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.add-food-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.method-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.method-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--bg-primary);
+}
+
+.method-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-btn {
+  padding: 0.75rem 1rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.search-btn:hover {
+  background: var(--primary-dark);
+}
+
+.selected-foods {
+  margin-bottom: 1.5rem;
+}
+
+.selected-foods h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.selected-food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.food-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.food-nutrition-detail {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.remove-btn {
+  padding: 0.5rem;
+  color: var(--danger);
+  background: transparent;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancel-btn,
+.confirm-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.cancel-btn {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.cancel-btn:hover {
+  background: var(--border);
+}
+
+.confirm-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .nutrition-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .meal-type-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

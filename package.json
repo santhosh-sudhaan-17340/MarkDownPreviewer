@@ -1,0 +1,33 @@
+{
+  "name": "fitness-diet-coaching-app",
+  "version": "1.0.0",
+  "description": "AI-powered fitness and diet coaching application with workout generation, food logging, and progress analytics",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": [
+    "fitness",
+    "diet",
+    "coaching",
+    "AI",
+    "workout",
+    "nutrition",
+    "health"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
