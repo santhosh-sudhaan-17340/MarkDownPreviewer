@@ -1,0 +1,745 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2196F3;
+    --primary-dark: #1976D2;
+    --secondary-color: #FF9800;
+    --success-color: #4CAF50;
+    --danger-color: #F44336;
+    --warning-color: #FFC107;
+    --dark-bg: #212121;
+    --light-bg: #FAFAFA;
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --border-color: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --traffic-green: #4CAF50;
+    --traffic-yellow: #FFC107;
+    --traffic-orange: #FF9800;
+    --traffic-red: #F44336;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: var(--text-primary);
+    background: var(--light-bg);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Header */
+#app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    max-width: 100%;
+}
+
+.app-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.header-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* Main Container */
+#main-container {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Map */
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Search Container */
+#search-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 500;
+}
+
+.search-box {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+#destination-input {
+    flex: 1;
+    border: none;
+    padding: 14px 16px;
+    font-size: 16px;
+    outline: none;
+}
+
+.suggestions {
+    background: white;
+    border-radius: 8px;
+    margin-top: 8px;
+    box-shadow: var(--shadow);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestions.hidden {
+    display: none;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: var(--light-bg);
+}
+
+.suggestion-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.suggestion-address {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Floating Buttons */
+.floating-btn {
+    position: absolute;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 400;
+}
+
+.floating-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.floating-btn:active {
+    transform: scale(0.95);
+}
+
+.locate-btn {
+    bottom: 120px;
+    right: 16px;
+}
+
+.report-btn {
+    bottom: 50px;
+    right: 16px;
+    background: var(--warning-color);
+    color: white;
+}
+
+/* Route Info Panel */
+.info-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+    max-height: 50vh;
+    overflow-y: auto;
+    z-index: 600;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.info-panel:not(.hidden) {
+    transform: translateY(0);
+}
+
+.route-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.route-info-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#route-options-container {
+    padding: 16px;
+}
+
+.route-option {
+    background: var(--light-bg);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.route-option:hover {
+    border-color: var(--primary-color);
+}
+
+.route-option.selected {
+    background: #E3F2FD;
+    border-color: var(--primary-color);
+}
+
+.route-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.route-duration {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.route-distance {
+    color: var(--text-secondary);
+}
+
+.route-traffic {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.traffic-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.traffic-light { background: var(--traffic-green); }
+.traffic-moderate { background: var(--traffic-yellow); }
+.traffic-heavy { background: var(--traffic-orange); }
+.traffic-severe { background: var(--traffic-red); }
+
+/* Navigation Panel */
+.nav-panel {
+    position: absolute;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 500;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.nav-panel:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.eta-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.eta-time {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.eta-distance {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.nav-instruction {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--light-bg);
+}
+
+.instruction-icon {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+    min-width: 40px;
+    text-align: center;
+}
+
+.instruction-text {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.nav-details {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 16px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Battery Status */
+.battery-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 500;
+}
+
+.battery-status svg {
+    color: var(--success-color);
+}
+
+.battery-status.low svg {
+    color: var(--danger-color);
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Incident Types */
+.incident-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.incident-btn {
+    background: var(--light-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.incident-btn:hover {
+    border-color: var(--primary-color);
+    background: #E3F2FD;
+}
+
+.incident-btn.selected {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.incident-icon {
+    font-size: 32px;
+}
+
+#incident-details {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 16px;
+    font-family: inherit;
+}
+
+/* Settings */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.setting-info p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 28px;
+    transition: 0.3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Buttons */
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--light-bg);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--border-color);
+}
+
+/* Toast Notifications */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--dark-bg);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    max-width: 300px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: toastIn 0.3s forwards;
+    pointer-events: all;
+}
+
+.toast.success { background: var(--success-color); }
+.toast.error { background: var(--danger-color); }
+.toast.warning { background: var(--warning-color); }
+
+@keyframes toastIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 2500;
+    text-align: center;
+}
+
+.loading-indicator.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .incident-types {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .route-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 18px;
+    }
+
+    #search-container {
+        left: 12px;
+        right: 12px;
+    }
+
+    .nav-panel {
+        left: 12px;
+        right: 12px;
+    }
+
+    .floating-btn {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Map Markers Custom Styles */
+.incident-marker {
+    background: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: var(--shadow);
+    border: 2px solid white;
+}
+
+.marker-accident { background: var(--danger-color); }
+.marker-hazard { background: var(--warning-color); }
+.marker-closure { background: var(--traffic-red); }
+.marker-police { background: #2196F3; }
+.marker-traffic { background: var(--traffic-orange); }
+
+/* Traffic Polyline Colors */
+.traffic-polyline-light { stroke: var(--traffic-green) !important; }
+.traffic-polyline-moderate { stroke: var(--traffic-yellow) !important; }
+.traffic-polyline-heavy { stroke: var(--traffic-orange) !important; }
+.traffic-polyline-severe { stroke: var(--traffic-red) !important; }
