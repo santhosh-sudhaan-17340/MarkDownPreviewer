@@ -1,0 +1,53 @@
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <i class="fas fa-code"></i>
+                    <span>Codeial</span>
+                </a>
+            </div>
+
+            <div class="nav-center">
+                <form action="/search" method="GET" class="search-form">
+                    <input type="text" name="query" placeholder="Search Codeial..." class="search-input">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="nav-right">
+                <% if (locals.user) { %>
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="/users/profile/<%= user._id %>" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="/friends/suggestions" class="nav-link">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Friends</span>
+                    </a>
+                    <a href="/messages" class="nav-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                    <a href="/notifications" class="nav-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                    <a href="/users/sign-out" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </a>
+                <% } else { %>
+                    <a href="/users/sign-in" class="nav-link">Sign In</a>
+                    <a href="/users/sign-up" class="nav-link btn-primary">Sign Up</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+</header>

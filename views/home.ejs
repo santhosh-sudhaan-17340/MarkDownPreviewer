@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="/css/home.css">
+
+<div class="home-container">
+    <div class="sidebar-left">
+        <% if (locals.user) { %>
+            <div class="user-card">
+                <div class="user-avatar">
+                    <% if (user.avatar) { %>
+                        <img src="<%= user.avatar %>" alt="<%= user.name %>">
+                    <% } else { %>
+                        <i class="fas fa-user-circle"></i>
+                    <% } %>
+                </div>
+                <h3><%= user.name %></h3>
+                <p class="user-email"><%= user.email %></p>
+                <a href="/users/profile/<%= user._id %>" class="btn btn-primary">View Profile</a>
+            </div>
+        <% } %>
+
+        <div class="quick-links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> News Feed</a></li>
+                <% if (locals.user) { %>
+                    <li><a href="/friends/suggestions"><i class="fas fa-user-plus"></i> Friend Suggestions</a></li>
+                    <li><a href="/messages"><i class="fas fa-envelope"></i> Messages</a></li>
+                    <li><a href="/notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <% if (locals.user) { %>
+            <div class="create-post-card">
+                <h3>Create Post</h3>
+                <form action="/posts/create" method="POST" enctype="multipart/form-data" id="new-post-form">
+                    <textarea name="content" placeholder="What's on your mind, <%= user.name.split(' ')[0] %>?" rows="3" required></textarea>
+
+                    <div class="post-options">
+                        <label class="file-upload">
+                            <i class="fas fa-image"></i> Photo
+                            <input type="file" name="image" accept="image/*">
+                        </label>
+
+                        <select name="privacy" class="privacy-select">
+                            <option value="public">Public</option>
+                            <option value="friends">Friends</option>
+                            <option value="private">Only Me</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+        <% } %>
+
+        <div class="posts-container" id="posts-list">
+            <% for(let post of posts) { %>
+                <%- include('_post', {post: post}); %>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="sidebar-right">
+        <div class="suggestions-card">
+            <h3>People You May Know</h3>
+            <div class="users-list">
+                <% for(let u of all_users.slice(0, 5)) { %>
+                    <% if (!locals.user || u._id.toString() !== user._id.toString()) { %>
+                        <div class="user-suggestion">
+                            <div class="user-avatar-small">
+                                <% if (u.avatar) { %>
+                                    <img src="<%= u.avatar %>" alt="<%= u.name %>">
+                                <% } else { %>
+                                    <i class="fas fa-user-circle"></i>
+                                <% } %>
+                            </div>
+                            <div class="user-info">
+                                <h4><a href="/users/profile/<%= u._id %>"><%= u.name %></a></h4>
+                                <% if (locals.user) { %>
+                                    <form action="/friends/send-request/<%= u._id %>" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn-small">Add Friend</button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>About Codeial</h3>
+            <p>Codeial is a social network for developers. Connect, share, and grow together!</p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/home.js"></script>

@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="/css/messages.css">
+
+<div class="messages-container">
+    <div class="messages-sidebar">
+        <h2>Messages</h2>
+        <a href="/messages" class="btn btn-secondary btn-block">Back to All Messages</a>
+    </div>
+
+    <div class="messages-main">
+        <div class="conversation-header">
+            <div class="conversation-user">
+                <div class="user-avatar">
+                    <% if (otherUser.avatar) { %>
+                        <img src="<%= otherUser.avatar %>" alt="<%= otherUser.name %>">
+                    <% } else { %>
+                        <i class="fas fa-user-circle"></i>
+                    <% } %>
+                </div>
+                <h3><a href="/users/profile/<%= otherUser._id %>"><%= otherUser.name %></a></h3>
+            </div>
+        </div>
+
+        <div class="messages-list" id="messages-list">
+            <% for(let message of messages) { %>
+                <div class="message <%= message.sender._id.toString() === user._id.toString() ? 'sent' : 'received' %>">
+                    <div class="message-avatar">
+                        <% if (message.sender.avatar) { %>
+                            <img src="<%= message.sender.avatar %>" alt="<%= message.sender.name %>">
+                        <% } else { %>
+                            <i class="fas fa-user-circle"></i>
+                        <% } %>
+                    </div>
+                    <div class="message-content">
+                        <p><%= message.content %></p>
+                        <span class="message-time"><%= new Date(message.createdAt).toLocaleTimeString() %></span>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="message-input-container">
+            <form id="message-form" class="message-form">
+                <input type="hidden" name="receiver" value="<%= otherUser._id %>">
+                <textarea name="content" placeholder="Type a message..." rows="2" required></textarea>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('message-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = {
+        receiver: formData.get('receiver'),
+        content: formData.get('content')
+    };
+
+    try {
+        const response = await fetch('/messages/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('Error sending message');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error sending message');
+    }
+});
+
+// Auto scroll to bottom of messages
+const messagesList = document.getElementById('messages-list');
+messagesList.scrollTop = messagesList.scrollHeight;
+</script>

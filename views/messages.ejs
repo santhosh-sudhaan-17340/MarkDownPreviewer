@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="/css/messages.css">
+
+<div class="messages-container">
+    <div class="messages-sidebar">
+        <h2>Messages</h2>
+        <div class="conversations-list">
+            <% if (conversationUsers.length > 0) { %>
+                <% for(let otherUser of conversationUsers) { %>
+                    <a href="/messages/conversation/<%= otherUser._id %>" class="conversation-item">
+                        <div class="conversation-avatar">
+                            <% if (otherUser.avatar) { %>
+                                <img src="<%= otherUser.avatar %>" alt="<%= otherUser.name %>">
+                            <% } else { %>
+                                <i class="fas fa-user-circle"></i>
+                            <% } %>
+                        </div>
+                        <div class="conversation-info">
+                            <h4><%= otherUser.name %></h4>
+                        </div>
+                    </a>
+                <% } %>
+            <% } else { %>
+                <div class="no-conversations">
+                    <i class="fas fa-inbox"></i>
+                    <p>No messages yet</p>
+                    <p class="hint">Visit a user's profile to send them a message</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="messages-main">
+        <div class="no-conversation-selected">
+            <i class="fas fa-comment-dots"></i>
+            <p>Select a conversation to start messaging</p>
+        </div>
+    </div>
+</div>

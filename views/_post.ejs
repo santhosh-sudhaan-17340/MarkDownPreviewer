@@ -1,0 +1,81 @@
+<div class="post-card" id="post-<%= post._id %>">
+    <div class="post-header">
+        <div class="post-author">
+            <div class="author-avatar">
+                <% if (post.user.avatar) { %>
+                    <img src="<%= post.user.avatar %>" alt="<%= post.user.name %>">
+                <% } else { %>
+                    <i class="fas fa-user-circle"></i>
+                <% } %>
+            </div>
+            <div class="author-info">
+                <h4><a href="/users/profile/<%= post.user._id %>"><%= post.user.name %></a></h4>
+                <p class="post-time"><%= new Date(post.createdAt).toLocaleString() %></p>
+            </div>
+        </div>
+        <% if (locals.user && post.user._id.toString() === user._id.toString()) { %>
+            <div class="post-actions">
+                <a href="/posts/destroy/<%= post._id %>" class="btn-delete" onclick="return confirm('Are you sure you want to delete this post?')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="post-content">
+        <p><%= post.content %></p>
+        <% if (post.image) { %>
+            <div class="post-image">
+                <img src="<%= post.image %>" alt="Post image">
+            </div>
+        <% } %>
+    </div>
+
+    <div class="post-stats">
+        <span class="likes-count">
+            <i class="fas fa-thumbs-up"></i> <%= post.likes.length %> Likes
+        </span>
+        <span class="comments-count">
+            <i class="fas fa-comment"></i> <%= post.comments.length %> Comments
+        </span>
+    </div>
+
+    <div class="post-footer">
+        <% if (locals.user) { %>
+            <button class="btn-like" data-post-id="<%= post._id %>" data-type="Post">
+                <%
+                let userLiked = false;
+                for(let like of post.likes) {
+                    if(like.user && like.user._id.toString() === user._id.toString()) {
+                        userLiked = true;
+                        break;
+                    }
+                }
+                %>
+                <i class="<%= userLiked ? 'fas' : 'far' %> fa-thumbs-up"></i>
+                <%= userLiked ? 'Unlike' : 'Like' %>
+            </button>
+            <button class="btn-comment" onclick="toggleCommentForm('<%= post._id %>')">
+                <i class="far fa-comment"></i> Comment
+            </button>
+        <% } %>
+    </div>
+
+    <% if (locals.user) { %>
+        <div class="comment-form-container" id="comment-form-<%= post._id %>" style="display: none;">
+            <form action="/comments/create" method="POST" class="comment-form">
+                <input type="hidden" name="post" value="<%= post._id %>">
+                <textarea name="content" placeholder="Write a comment..." rows="2" required></textarea>
+                <button type="submit" class="btn btn-primary btn-small">Comment</button>
+            </form>
+        </div>
+    <% } %>
+
+    <div class="comments-container">
+        <% for(let comment of post.comments) { %>
+            <% if (!comment.parentComment) { %>
+                <%- include('_comment', {comment: comment}); %>
+            <% } %>
+        <% } %>
+    </div>
+</div>

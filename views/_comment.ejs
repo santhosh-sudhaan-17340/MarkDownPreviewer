@@ -1,0 +1,46 @@
+<div class="comment" id="comment-<%= comment._id %>">
+    <div class="comment-header">
+        <div class="comment-author">
+            <div class="author-avatar-small">
+                <% if (comment.user && comment.user.avatar) { %>
+                    <img src="<%= comment.user.avatar %>" alt="<%= comment.user.name %>">
+                <% } else { %>
+                    <i class="fas fa-user-circle"></i>
+                <% } %>
+            </div>
+            <div class="comment-info">
+                <h5>
+                    <% if (comment.user) { %>
+                        <a href="/users/profile/<%= comment.user._id %>"><%= comment.user.name %></a>
+                    <% } else { %>
+                        Unknown User
+                    <% } %>
+                </h5>
+                <p class="comment-time"><%= new Date(comment.createdAt).toLocaleString() %></p>
+            </div>
+        </div>
+        <% if (locals.user && comment.user && comment.user._id.toString() === user._id.toString()) { %>
+            <a href="/comments/destroy/<%= comment._id %>" class="btn-delete-small" onclick="return confirm('Delete this comment?')">
+                <i class="fas fa-trash"></i>
+            </a>
+        <% } %>
+    </div>
+    <div class="comment-content">
+        <p><%= comment.content %></p>
+    </div>
+    <div class="comment-actions">
+        <% if (locals.user) { %>
+            <button class="btn-like-comment" data-comment-id="<%= comment._id %>" data-type="Comment">
+                <i class="far fa-thumbs-up"></i> Like (<%= comment.likes.length %>)
+            </button>
+        <% } %>
+    </div>
+
+    <% if (comment.replies && comment.replies.length > 0) { %>
+        <div class="replies-container">
+            <% for(let reply of comment.replies) { %>
+                <%- include('_comment', {comment: reply}); %>
+            <% } %>
+        </div>
+    <% } %>
+</div>

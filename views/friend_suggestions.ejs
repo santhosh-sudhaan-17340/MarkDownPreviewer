@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="/css/friends.css">
+
+<div class="friends-container">
+    <h1>People You May Know</h1>
+
+    <div class="suggestions-grid">
+        <% if (suggestions.length > 0) { %>
+            <% for(let suggestion of suggestions) { %>
+                <div class="suggestion-card">
+                    <div class="suggestion-avatar">
+                        <% if (suggestion.avatar) { %>
+                            <img src="<%= suggestion.avatar %>" alt="<%= suggestion.name %>">
+                        <% } else { %>
+                            <i class="fas fa-user-circle"></i>
+                        <% } %>
+                    </div>
+                    <h3><a href="/users/profile/<%= suggestion._id %>"><%= suggestion.name %></a></h3>
+                    <p><%= suggestion.email %></p>
+                    <% if (suggestion.city) { %>
+                        <p class="city"><i class="fas fa-map-marker-alt"></i> <%= suggestion.city %></p>
+                    <% } %>
+                    <form action="/friends/send-request/<%= suggestion._id %>" method="POST">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Add Friend
+                        </button>
+                    </form>
+                    <a href="/users/profile/<%= suggestion._id %>" class="btn btn-secondary">View Profile</a>
+                </div>
+            <% } %>
+        <% } else { %>
+            <div class="no-suggestions">
+                <i class="fas fa-users"></i>
+                <p>No friend suggestions at the moment</p>
+            </div>
+        <% } %>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+<link rel="stylesheet" href="/css/profile.css">
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="cover-photo">
+            <% if (profile_user.coverPhoto) { %>
+                <img src="<%= profile_user.coverPhoto %>" alt="Cover Photo">
+            <% } %>
+        </div>
+
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <% if (profile_user.avatar) { %>
+                    <img src="<%= profile_user.avatar %>" alt="<%= profile_user.name %>">
+                <% } else { %>
+                    <i class="fas fa-user-circle"></i>
+                <% } %>
+            </div>
+
+            <div class="profile-details">
+                <h1><%= profile_user.name %></h1>
+                <p class="profile-email"><%= profile_user.email %></p>
+                <% if (profile_user.bio) { %>
+                    <p class="profile-bio"><%= profile_user.bio %></p>
+                <% } %>
+
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-number"><%= posts.length %></span>
+                        <span class="stat-label">Posts</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number"><%= profile_user.friends.length %></span>
+                        <span class="stat-label">Friends</span>
+                    </div>
+                </div>
+
+                <% if (locals.user) { %>
+                    <% if (user._id.toString() === profile_user._id.toString()) { %>
+                        <button class="btn btn-primary" onclick="toggleEditProfile()">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    <% } else { %>
+                        <% if (user.friends.includes(profile_user._id)) { %>
+                            <form action="/friends/remove-friend/<%= profile_user._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-secondary">
+                                    <i class="fas fa-user-minus"></i> Unfriend
+                                </button>
+                            </form>
+                        <% } else if (user.friendRequestsSent.includes(profile_user._id)) { %>
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-clock"></i> Request Sent
+                            </button>
+                        <% } else if (user.friendRequestsReceived.includes(profile_user._id)) { %>
+                            <form action="/friends/accept-request/<%= profile_user._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-user-check"></i> Accept Request
+                                </button>
+                            </form>
+                            <form action="/friends/reject-request/<%= profile_user._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-secondary">Reject</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/friends/send-request/<%= profile_user._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i> Add Friend
+                                </button>
+                            </form>
+                        <% } %>
+
+                        <a href="/messages/conversation/<%= profile_user._id %>" class="btn btn-secondary">
+                            <i class="fas fa-envelope"></i> Message
+                        </a>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <% if (locals.user && user._id.toString() === profile_user._id.toString()) { %>
+        <div class="edit-profile-form" id="edit-profile-form" style="display: none;">
+            <h2>Edit Profile</h2>
+            <form action="/users/update/<%= user._id %>" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" value="<%= profile_user.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea name="bio" id="bio" rows="3"><%= profile_user.bio %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" value="<%= profile_user.city %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="relationship">Relationship Status</label>
+                    <select name="relationship" id="relationship">
+                        <option value="">Select...</option>
+                        <option value="Single" <%= profile_user.relationship === 'Single' ? 'selected' : '' %>>Single</option>
+                        <option value="In a relationship" <%= profile_user.relationship === 'In a relationship' ? 'selected' : '' %>>In a relationship</option>
+                        <option value="Married" <%= profile_user.relationship === 'Married' ? 'selected' : '' %>>Married</option>
+                        <option value="Complicated" <%= profile_user.relationship === 'Complicated' ? 'selected' : '' %>>It's complicated</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="avatar">Profile Picture</label>
+                    <input type="file" name="avatar" id="avatar" accept="image/*">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleEditProfile()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    <% } %>
+
+    <div class="profile-content">
+        <div class="profile-sidebar">
+            <div class="info-card">
+                <h3>About</h3>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <span><%= profile_user.email %></span>
+                </div>
+                <% if (profile_user.city) { %>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><%= profile_user.city %></span>
+                    </div>
+                <% } %>
+                <% if (profile_user.relationship) { %>
+                    <div class="info-item">
+                        <i class="fas fa-heart"></i>
+                        <span><%= profile_user.relationship %></span>
+                    </div>
+                <% } %>
+            </div>
+
+            <% if (profile_user.friends.length > 0) { %>
+                <div class="friends-card">
+                    <h3>Friends (<%= profile_user.friends.length %>)</h3>
+                    <div class="friends-grid">
+                        <% for(let friend of profile_user.friends.slice(0, 9)) { %>
+                            <a href="/users/profile/<%= friend._id %>" class="friend-item">
+                                <% if (friend.avatar) { %>
+                                    <img src="<%= friend.avatar %>" alt="<%= friend.name %>">
+                                <% } else { %>
+                                    <i class="fas fa-user-circle"></i>
+                                <% } %>
+                                <span><%= friend.name.split(' ')[0] %></span>
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="profile-posts">
+            <h2>Posts</h2>
+            <% if (posts.length > 0) { %>
+                <% for(let post of posts) { %>
+                    <%- include('_post', {post: post}); %>
+                <% } %>
+            <% } else { %>
+                <div class="no-posts">
+                    <i class="fas fa-inbox"></i>
+                    <p>No posts yet</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEditProfile() {
+    const form = document.getElementById('edit-profile-form');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>

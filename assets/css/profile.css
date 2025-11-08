@@ -1,0 +1,243 @@
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.cover-photo {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, var(--primary-color), #42b72a);
+    overflow: hidden;
+}
+
+.cover-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    padding: 20px 40px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    overflow: hidden;
+    margin-top: -75px;
+    background-color: white;
+    box-shadow: var(--shadow);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-avatar i {
+    font-size: 150px;
+}
+
+.profile-details {
+    flex: 1;
+    padding-top: 20px;
+}
+
+.profile-details h1 {
+    margin-bottom: 5px;
+}
+
+.profile-email {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.profile-bio {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.profile-stats {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.edit-profile-form {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.edit-profile-form h2 {
+    margin-bottom: 20px;
+}
+
+.edit-profile-form .form-group {
+    margin-bottom: 20px;
+}
+
+.edit-profile-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+}
+
+.profile-sidebar .info-card,
+.profile-sidebar .friends-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.info-card h3,
+.friends-card h3 {
+    margin-bottom: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.info-item i {
+    color: var(--text-secondary);
+    width: 20px;
+}
+
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.friend-item {
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.friend-item:hover {
+    background-color: var(--light-color);
+    text-decoration: none;
+}
+
+.friend-item img,
+.friend-item i {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    object-fit: cover;
+}
+
+.friend-item i {
+    font-size: 60px;
+    color: var(--text-secondary);
+}
+
+.friend-item span {
+    display: block;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.profile-posts h2 {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.no-posts {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.no-posts i {
+    font-size: 60px;
+    margin-bottom: 15px;
+    color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .profile-content {
+        grid-template-columns: 1fr;
+    }
+
+    .cover-photo {
+        height: 200px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        margin-top: -60px;
+    }
+
+    .friends-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

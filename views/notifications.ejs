@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="/css/notifications.css">
+
+<div class="notifications-container">
+    <div class="notifications-header">
+        <h1>Notifications</h1>
+        <% if (notifications.length > 0) { %>
+            <form action="/notifications/mark-all-read" method="POST">
+                <button type="submit" class="btn btn-secondary">Mark All as Read</button>
+            </form>
+        <% } %>
+    </div>
+
+    <div class="notifications-list">
+        <% if (notifications.length > 0) { %>
+            <% for(let notification of notifications) { %>
+                <div class="notification-item <%= notification.read ? 'read' : 'unread' %>">
+                    <div class="notification-avatar">
+                        <% if (notification.fromUser.avatar) { %>
+                            <img src="<%= notification.fromUser.avatar %>" alt="<%= notification.fromUser.name %>">
+                        <% } else { %>
+                            <i class="fas fa-user-circle"></i>
+                        <% } %>
+                    </div>
+                    <div class="notification-content">
+                        <p><%= notification.content %></p>
+                        <span class="notification-time"><%= new Date(notification.createdAt).toLocaleString() %></span>
+                    </div>
+                    <% if (!notification.read) { %>
+                        <button class="mark-read-btn" onclick="markAsRead('<%= notification._id %>')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    <% } %>
+                </div>
+            <% } %>
+        <% } else { %>
+            <div class="no-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <p>No notifications</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+function markAsRead(notificationId) {
+    fetch(`/notifications/mark-read/${notificationId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
