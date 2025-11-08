@@ -1,0 +1,248 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum TicketStatus {
+  NEW
+  OPEN
+  IN_PROGRESS
+  PENDING_USER
+  PENDING_AGENT
+  RESOLVED
+  CLOSED
+  ESCALATED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SLAStatus {
+  MET
+  AT_RISK
+  BREACHED
+}
+
+enum EscalationLevel {
+  L1
+  L2
+  L3
+  MANAGEMENT
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  name            String
+  role            UserRole          @default(USER)
+  skills          AgentSkill[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  ticketsCreated  Ticket[]          @relation("TicketCreator")
+  ticketsAssigned Ticket[]          @relation("TicketAssignee")
+  comments        TicketComment[]
+  auditLogs       AuditLog[]
+  escalations     TicketEscalation[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Skill {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+
+  agents      AgentSkill[]
+  tickets     Ticket[]
+
+  @@index([name])
+}
+
+model AgentSkill {
+  id          String   @id @default(uuid())
+  userId      String
+  skillId     String
+  proficiency Int      @default(1) // 1-5 scale
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+}
+
+model Ticket {
+  id              String            @id @default(uuid())
+  ticketNumber    String            @unique
+  title           String
+  description     String
+  status          TicketStatus      @default(NEW)
+  priority        TicketPriority    @default(MEDIUM)
+
+  // User info
+  createdById     String
+  assignedToId    String?
+
+  // Skill-based routing
+  requiredSkillId String?
+
+  // SLA tracking
+  responseSLAMinutes   Int              @default(60)
+  resolutionSLAMinutes Int              @default(480)
+  responseSLADeadline  DateTime?
+  resolutionSLADeadline DateTime?
+  responseSLAStatus    SLAStatus        @default(MET)
+  resolutionSLAStatus  SLAStatus        @default(MET)
+  firstResponseAt      DateTime?
+  resolvedAt           DateTime?
+  closedAt             DateTime?
+
+  // Timestamps
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  createdBy       User              @relation("TicketCreator", fields: [createdById], references: [id])
+  assignedTo      User?             @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  requiredSkill   Skill?            @relation(fields: [requiredSkillId], references: [id])
+  comments        TicketComment[]
+  attachments     TicketAttachment[]
+  statusHistory   TicketStatusHistory[]
+  auditLogs       AuditLog[]
+  escalations     TicketEscalation[]
+  slaBreaches     SLABreach[]
+
+  @@index([ticketNumber])
+  @@index([status])
+  @@index([priority])
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([requiredSkillId])
+  @@index([createdAt])
+  @@index([responseSLAStatus])
+  @@index([resolutionSLAStatus])
+}
+
+model TicketComment {
+  id          String   @id @default(uuid())
+  ticketId    String
+  userId      String
+  content     String
+  isInternal  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model TicketAttachment {
+  id          String   @id @default(uuid())
+  ticketId    String
+  fileName    String
+  originalName String
+  mimeType    String
+  fileSize    Int
+  filePath    String
+  uploadedAt  DateTime @default(now())
+
+  // Metadata
+  metadata    Json?    // Store additional metadata as JSON
+
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([uploadedAt])
+}
+
+model TicketStatusHistory {
+  id          String       @id @default(uuid())
+  ticketId    String
+  fromStatus  TicketStatus?
+  toStatus    TicketStatus
+  changedAt   DateTime     @default(now())
+  reason      String?
+
+  ticket      Ticket       @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([changedAt])
+}
+
+model TicketEscalation {
+  id          String          @id @default(uuid())
+  ticketId    String
+  level       EscalationLevel
+  reason      String
+  escalatedById String
+  escalatedAt DateTime        @default(now())
+  resolvedAt  DateTime?
+
+  ticket      Ticket          @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  escalatedBy User            @relation(fields: [escalatedById], references: [id])
+
+  @@index([ticketId])
+  @@index([escalatedAt])
+  @@index([level])
+}
+
+model SLABreach {
+  id          String   @id @default(uuid())
+  ticketId    String
+  breachType  String   // 'RESPONSE' or 'RESOLUTION'
+  slaDeadline DateTime
+  breachedAt  DateTime @default(now())
+  breachDurationMinutes Int
+
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([breachType])
+  @@index([breachedAt])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  ticketId    String?
+  userId      String?
+  action      String
+  entityType  String
+  entityId    String
+  changes     Json?    // Store before/after values
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  ticket      Ticket?  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([action])
+}
