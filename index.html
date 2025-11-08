@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Partner - Smart Learning Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h2>AI Study Partner</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="subjects">
+                    <i class="fas fa-book"></i>
+                    <span>My Subjects</span>
+                </li>
+                <li class="nav-item" data-section="micro-learning">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Micro-Learning</span>
+                </li>
+                <li class="nav-item" data-section="doubts">
+                    <i class="fas fa-camera"></i>
+                    <span>Doubt Capture</span>
+                </li>
+                <li class="nav-item" data-section="flashcards">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Flashcards</span>
+                </li>
+                <li class="nav-item" data-section="study-groups">
+                    <i class="fas fa-users"></i>
+                    <span>Study Groups</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h1>Learning Dashboard</h1>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-fire"></i>
+                        <div class="stat-info">
+                            <h3 id="streak-count">0</h3>
+                            <p>Day Streak</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h3 id="study-time">0h</h3>
+                            <p>Study Time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="stat-info">
+                            <h3 id="tasks-completed">0</h3>
+                            <p>Tasks Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-brain"></i>
+                        <div class="stat-info">
+                            <h3 id="cards-reviewed">0</h3>
+                            <p>Cards Reviewed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-section">
+                        <h2>Today's Tasks</h2>
+                        <div id="today-tasks" class="task-list">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Subject Progress</h2>
+                        <div id="subject-progress" class="progress-list">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Subjects Section -->
+            <section id="subjects" class="content-section">
+                <div class="section-header">
+                    <h1>My Subjects</h1>
+                    <button class="btn-primary" id="add-subject-btn">
+                        <i class="fas fa-plus"></i> Add Subject
+                    </button>
+                </div>
+
+                <div id="subjects-grid" class="subjects-grid">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Micro-Learning Section -->
+            <section id="micro-learning" class="content-section">
+                <h1>Micro-Learning Tasks</h1>
+                <p class="section-description">Quick 5-10 minute learning tasks tailored to your schedule</p>
+
+                <div class="micro-learning-controls">
+                    <div class="time-selector">
+                        <label>Available Time:</label>
+                        <button class="time-btn active" data-minutes="5">5 min</button>
+                        <button class="time-btn" data-minutes="10">10 min</button>
+                        <button class="time-btn" data-minutes="15">15 min</button>
+                        <button class="time-btn" data-minutes="20">20 min</button>
+                    </div>
+                    <button class="btn-primary" id="generate-tasks-btn">
+                        <i class="fas fa-magic"></i> Generate Tasks
+                    </button>
+                </div>
+
+                <div id="micro-tasks-container" class="micro-tasks-container">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Doubt Capture Section -->
+            <section id="doubts" class="content-section">
+                <h1>Doubt Capture</h1>
+                <p class="section-description">Capture your doubts using camera and get AI-powered solutions</p>
+
+                <div class="doubt-capture-container">
+                    <div class="camera-section">
+                        <video id="camera-feed" autoplay></video>
+                        <canvas id="photo-canvas" style="display: none;"></canvas>
+                        <div class="camera-controls">
+                            <button class="btn-primary" id="start-camera-btn">
+                                <i class="fas fa-camera"></i> Start Camera
+                            </button>
+                            <button class="btn-secondary" id="capture-photo-btn" style="display: none;">
+                                <i class="fas fa-camera-retro"></i> Capture
+                            </button>
+                            <button class="btn-secondary" id="stop-camera-btn" style="display: none;">
+                                <i class="fas fa-stop"></i> Stop
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="doubts-list-section">
+                        <h2>Captured Doubts</h2>
+                        <div id="doubts-list" class="doubts-list">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="content-section">
+                <h1>Spaced Repetition Flashcards</h1>
+                <p class="section-description">Review cards based on scientifically-proven spaced repetition</p>
+
+                <div class="flashcard-controls">
+                    <button class="btn-primary" id="add-card-btn">
+                        <i class="fas fa-plus"></i> Add Card
+                    </button>
+                    <button class="btn-secondary" id="start-review-btn">
+                        <i class="fas fa-play"></i> Start Review
+                    </button>
+                    <span class="cards-due" id="cards-due-count">0 cards due</span>
+                </div>
+
+                <div id="review-container" class="review-container" style="display: none;">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3>Question</h3>
+                                <p id="card-question"></p>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>Answer</h3>
+                                <p id="card-answer"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-controls">
+                        <button class="btn-flip" id="flip-card-btn">
+                            <i class="fas fa-sync-alt"></i> Flip Card
+                        </button>
+                    </div>
+                    <div class="difficulty-buttons" id="difficulty-buttons" style="display: none;">
+                        <button class="btn-diff btn-hard" data-difficulty="hard">
+                            <i class="fas fa-times"></i> Hard<br><small>Review in 1 day</small>
+                        </button>
+                        <button class="btn-diff btn-good" data-difficulty="good">
+                            <i class="fas fa-check"></i> Good<br><small>Review in 3 days</small>
+                        </button>
+                        <button class="btn-diff btn-easy" data-difficulty="easy">
+                            <i class="fas fa-check-double"></i> Easy<br><small>Review in 7 days</small>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="cards-list" class="cards-list">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Study Groups Section -->
+            <section id="study-groups" class="content-section">
+                <h1>Study Group Matchmaking</h1>
+                <p class="section-description">Find and connect with study partners who share your learning goals</p>
+
+                <div class="profile-section">
+                    <h2>Your Learning Profile</h2>
+                    <div class="profile-form">
+                        <div class="form-group">
+                            <label>Preferred Study Time</label>
+                            <select id="study-time-pref">
+                                <option value="morning">Morning (6 AM - 12 PM)</option>
+                                <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
+                                <option value="evening">Evening (6 PM - 10 PM)</option>
+                                <option value="night">Night (10 PM - 2 AM)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Study Style</label>
+                            <select id="study-style-pref">
+                                <option value="collaborative">Collaborative</option>
+                                <option value="competitive">Competitive</option>
+                                <option value="teaching">Teaching-focused</option>
+                                <option value="quiet">Quiet Co-working</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" id="update-profile-btn">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                        <button class="btn-secondary" id="find-matches-btn">
+                            <i class="fas fa-search"></i> Find Matches
+                        </button>
+                    </div>
+                </div>
+
+                <div class="matches-section">
+                    <h2>Recommended Study Partners</h2>
+                    <div id="study-matches" class="matches-grid">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-subject-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Subject</h2>
+            <form id="subject-form">
+                <div class="form-group">
+                    <label>Subject Name</label>
+                    <input type="text" id="subject-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="subject-category">
+                        <option value="science">Science</option>
+                        <option value="math">Mathematics</option>
+                        <option value="language">Language</option>
+                        <option value="humanities">Humanities</option>
+                        <option value="technology">Technology</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Hours/Week</label>
+                    <input type="number" id="subject-hours" min="1" max="40" value="5">
+                </div>
+                <button type="submit" class="btn-primary">Add Subject</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-card-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Flashcard</h2>
+            <form id="card-form">
+                <div class="form-group">
+                    <label>Subject</label>
+                    <select id="card-subject" required>
+                        <option value="">Select a subject</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Question</label>
+                    <textarea id="card-question-input" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Answer</label>
+                    <textarea id="card-answer-input" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Add Card</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="study-tracker.js"></script>
+    <script src="micro-learning.js"></script>
+    <script src="doubt-capture.js"></script>
+    <script src="spaced-repetition.js"></script>
+    <script src="group-matching.js"></script>
+</body>
+</html>
