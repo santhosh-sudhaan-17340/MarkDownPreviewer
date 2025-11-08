@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcel Locker Management - Ship Your Package</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            margin-top: 15px;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .location-card {
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .location-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .location-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .location-card h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .location-card p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .capacity-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .capacity-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            transition: width 0.3s;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .result-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .pickup-code {
+            font-size: 24px;
+            font-family: monospace;
+            color: #667eea;
+            letter-spacing: 3px;
+        }
+
+        .pin-code {
+            font-size: 20px;
+            font-family: monospace;
+            color: #e91e63;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .size-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .size-option {
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .size-option:hover {
+            border-color: #667eea;
+        }
+
+        .size-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .size-option input[type="radio"] {
+            display: none;
+        }
+
+        .size-label {
+            font-weight: 600;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .size-dims {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Parcel Locker Management</h1>
+            <p>Ship your packages to smart lockers with secure pickup codes</p>
+            <div class="nav-links">
+                <a href="/">Markdown Previewer</a>
+                <a href="/locker.html">Ship Parcel</a>
+                <a href="/admin.html">Admin Portal</a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Ship Parcel Form -->
+            <div class="card">
+                <h2>Ship a Parcel</h2>
+                <div id="shipAlert"></div>
+
+                <form id="shipForm">
+                    <div class="form-group">
+                        <label>Select Location *</label>
+                        <div id="locationsContainer" class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading locations...</p>
+                        </div>
+                        <input type="hidden" id="locationId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Package Size *</label>
+                        <div class="size-selector">
+                            <label class="size-option">
+                                <input type="radio" name="size" value="small" required>
+                                <span class="size-label">Small</span>
+                                <span class="size-dims">30×30×20 cm</span>
+                            </label>
+                            <label class="size-option">
+                                <input type="radio" name="size" value="medium" required>
+                                <span class="size-label">Medium</span>
+                                <span class="size-dims">40×40×40 cm</span>
+                            </label>
+                            <label class="size-option">
+                                <input type="radio" name="size" value="large" required>
+                                <span class="size-label">Large</span>
+                                <span class="size-dims">60×60×60 cm</span>
+                            </label>
+                            <label class="size-option">
+                                <input type="radio" name="size" value="extra_large" required>
+                                <span class="size-label">Extra Large</span>
+                                <span class="size-dims">80×80×80 cm</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderName">Your Name *</label>
+                        <input type="text" id="senderName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderEmail">Your Email *</label>
+                        <input type="email" id="senderEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderPhone">Your Phone</label>
+                        <input type="tel" id="senderPhone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientName">Recipient Name *</label>
+                        <input type="text" id="recipientName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientEmail">Recipient Email *</label>
+                        <input type="email" id="recipientEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientPhone">Recipient Phone *</label>
+                        <input type="tel" id="recipientPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weightKg">Weight (kg)</label>
+                        <input type="number" id="weightKg" step="0.1" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">Ship Parcel</button>
+                </form>
+
+                <div id="shipResult" style="display: none;"></div>
+            </div>
+
+            <!-- Track & Pickup -->
+            <div class="card">
+                <h2>Track or Pickup Parcel</h2>
+
+                <!-- Track Parcel -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">Track Your Parcel</h3>
+                    <div id="trackAlert"></div>
+                    <div class="form-group">
+                        <label for="trackingNumber">Tracking Number</label>
+                        <input type="text" id="trackingNumber" placeholder="PKG1234567890">
+                    </div>
+                    <button type="button" class="btn" id="trackBtn">Track Parcel</button>
+                    <div id="trackResult" style="display: none;"></div>
+                </div>
+
+                <!-- Pickup Parcel -->
+                <div>
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">Pickup Your Parcel</h3>
+                    <div id="pickupAlert"></div>
+                    <div class="form-group">
+                        <label for="pickupCode">Pickup Code</label>
+                        <input type="text" id="pickupCode" placeholder="ABC123" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label for="pinCode">PIN Code</label>
+                        <input type="text" id="pinCode" placeholder="1234" maxlength="4">
+                    </div>
+                    <button type="button" class="btn" id="pickupBtn">Pickup Parcel</button>
+                    <div id="pickupResult" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let selectedLocationId = null;
+
+        // Load locations on page load
+        async function loadLocations() {
+            try {
+                const response = await fetch(`${API_URL}/locations`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayLocations(result.data);
+                } else {
+                    document.getElementById('locationsContainer').innerHTML =
+                        `<div class="alert alert-error">Failed to load locations</div>`;
+                }
+            } catch (error) {
+                document.getElementById('locationsContainer').innerHTML =
+                    `<div class="alert alert-error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayLocations(locations) {
+            const container = document.getElementById('locationsContainer');
+            container.className = 'locations-grid';
+            container.innerHTML = locations.map(loc => {
+                const availablePercent = (loc.available_slots / loc.total_slots) * 100;
+                return `
+                    <div class="location-card" onclick="selectLocation(${loc.id}, this)">
+                        <h3>${loc.name}</h3>
+                        <p>${loc.city}, ${loc.state}</p>
+                        <p style="font-size: 12px; color: #888;">${loc.available_slots} / ${loc.total_slots} slots available</p>
+                        <div class="capacity-bar">
+                            <div class="capacity-bar-fill" style="width: ${availablePercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectLocation(id, element) {
+            document.querySelectorAll('.location-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedLocationId = id;
+            document.getElementById('locationId').value = id;
+        }
+
+        // Size selector
+        document.querySelectorAll('.size-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Ship parcel form
+        document.getElementById('shipForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedLocationId) {
+                showAlert('shipAlert', 'Please select a location', 'error');
+                return;
+            }
+
+            const size = document.querySelector('input[name="size"]:checked')?.value;
+            if (!size) {
+                showAlert('shipAlert', 'Please select a package size', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            const data = {
+                senderName: document.getElementById('senderName').value,
+                senderEmail: document.getElementById('senderEmail').value,
+                senderPhone: document.getElementById('senderPhone').value,
+                recipientName: document.getElementById('recipientName').value,
+                recipientEmail: document.getElementById('recipientEmail').value,
+                recipientPhone: document.getElementById('recipientPhone').value,
+                size: size,
+                weightKg: parseFloat(document.getElementById('weightKg').value) || null,
+                description: document.getElementById('description').value,
+                locationId: selectedLocationId
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/parcels`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showShipResult(result.data);
+                    document.getElementById('shipForm').reset();
+                    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+                    document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+                    selectedLocationId = null;
+                } else {
+                    showAlert('shipAlert', result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('shipAlert', 'Error: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Ship Parcel';
+            }
+        });
+
+        function showShipResult(data) {
+            const resultDiv = document.getElementById('shipResult');
+            const expiresAt = new Date(data.expiresAt);
+
+            resultDiv.innerHTML = `
+                <div class="result-box">
+                    <h3>✅ Parcel Reserved Successfully!</h3>
+                    <div class="result-item">
+                        <span class="result-label">Tracking Number:</span>
+                        <span class="result-value">${data.trackingNumber}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Location:</span>
+                        <span class="result-value">${data.locationName}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Locker:</span>
+                        <span class="result-value">${data.lockerNumber} - ${data.slotNumber}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Pickup Code:</span>
+                        <span class="pickup-code">${data.pickupCode}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">PIN Code:</span>
+                        <span class="pin-code">${data.pinCode}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Expires At:</span>
+                        <span class="result-value">${expiresAt.toLocaleString()}</span>
+                    </div>
+                    <div class="alert alert-info" style="margin-top: 15px;">
+                        <strong>Important:</strong> Save your pickup code and PIN. The recipient will need both to collect the parcel.
+                    </div>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Track parcel
+        document.getElementById('trackBtn').addEventListener('click', async () => {
+            const trackingNumber = document.getElementById('trackingNumber').value.trim();
+            if (!trackingNumber) {
+                showAlert('trackAlert', 'Please enter a tracking number', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/parcels/${trackingNumber}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    showTrackResult(result.data);
+                } else {
+                    showAlert('trackAlert', result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('trackAlert', 'Error: ' + error.message, 'error');
+            }
+        });
+
+        function showTrackResult(data) {
+            const resultDiv = document.getElementById('trackResult');
+            const statusEmoji = {
+                'pending': '⏳',
+                'in_transit': '🚚',
+                'delivered': '📦',
+                'picked_up': '✅',
+                'expired': '⚠️',
+                'returned': '↩️'
+            };
+
+            resultDiv.innerHTML = `
+                <div class="result-box">
+                    <h3>${statusEmoji[data.status]} Parcel Status: ${data.status.replace('_', ' ').toUpperCase()}</h3>
+                    <div class="result-item">
+                        <span class="result-label">Tracking Number:</span>
+                        <span class="result-value">${data.tracking_number}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Recipient:</span>
+                        <span class="result-value">${data.recipient_name}</span>
+                    </div>
+                    ${data.location_name ? `
+                        <div class="result-item">
+                            <span class="result-label">Location:</span>
+                            <span class="result-value">${data.location_name}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Address:</span>
+                            <span class="result-value">${data.address}, ${data.city}, ${data.state} ${data.zip_code}</span>
+                        </div>
+                    ` : ''}
+                    ${data.locker_number ? `
+                        <div class="result-item">
+                            <span class="result-label">Locker:</span>
+                            <span class="result-value">${data.locker_number} - ${data.slot_number}</span>
+                        </div>
+                    ` : ''}
+                    ${data.expires_at ? `
+                        <div class="result-item">
+                            <span class="result-label">Expires:</span>
+                            <span class="result-value">${new Date(data.expires_at).toLocaleString()}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        // Pickup parcel
+        document.getElementById('pickupBtn').addEventListener('click', async () => {
+            const pickupCode = document.getElementById('pickupCode').value.trim().toUpperCase();
+            const pinCode = document.getElementById('pinCode').value.trim();
+
+            if (!pickupCode || !pinCode) {
+                showAlert('pickupAlert', 'Please enter both pickup code and PIN', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/pickup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pickupCode, pinCode })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showPickupResult(result.data);
+                    document.getElementById('pickupCode').value = '';
+                    document.getElementById('pinCode').value = '';
+                } else {
+                    showAlert('pickupAlert', result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('pickupAlert', 'Error: ' + error.message, 'error');
+            }
+        });
+
+        function showPickupResult(data) {
+            const resultDiv = document.getElementById('pickupResult');
+            resultDiv.innerHTML = `
+                <div class="result-box">
+                    <h3>🎉 Pickup Successful!</h3>
+                    <div class="result-item">
+                        <span class="result-label">Tracking Number:</span>
+                        <span class="result-value">${data.trackingNumber}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Location:</span>
+                        <span class="result-value">${data.locationName}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Locker:</span>
+                        <span class="result-value">${data.lockerNumber} - ${data.slotNumber}</span>
+                    </div>
+                    <div class="alert alert-success" style="margin-top: 15px;">
+                        The locker door will open shortly. Please collect your parcel.
+                    </div>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        function showAlert(elementId, message, type) {
+            const alertDiv = document.getElementById(elementId);
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        // Initialize
+        loadLocations();
+    </script>
+</body>
+</html>

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Parcel Locker Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            margin-top: 10px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-secondary {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 Admin Portal</h1>
+        <p>Parcel Locker Management System</p>
+        <div class="nav-links">
+            <a href="/">Markdown Previewer</a>
+            <a href="/locker.html">Ship Parcel</a>
+            <a href="/admin.html">Admin Portal</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab" onclick="switchTab('lockers')">Lockers</button>
+            <button class="tab" onclick="switchTab('health')">Health Checks</button>
+            <button class="tab" onclick="switchTab('analytics')">Analytics</button>
+            <button class="tab" onclick="switchTab('optimization')">Optimization</button>
+            <button class="tab" onclick="switchTab('audit')">Audit Logs</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div id="dashboardStats" class="loading">
+                <div class="spinner"></div>
+                <p>Loading dashboard...</p>
+            </div>
+        </div>
+
+        <!-- Lockers Tab -->
+        <div id="lockers" class="tab-content">
+            <div class="card">
+                <div class="toolbar">
+                    <h2 style="margin: 0; border: none;">All Lockers</h2>
+                    <button class="btn btn-primary" onclick="loadLockers()">Refresh</button>
+                </div>
+                <div id="lockersContent" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading lockers...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Checks Tab -->
+        <div id="health" class="tab-content">
+            <div class="card">
+                <h2>Locker Health Status</h2>
+                <div class="alert alert-info">
+                    Perform routine health checks to ensure all lockers are functioning properly.
+                </div>
+                <div id="healthContent"></div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="card">
+                <h2>Utilization Analytics</h2>
+                <div id="analyticsContent" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading analytics...</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Location Performance</h2>
+                <div id="performanceContent" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading performance data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Tab -->
+        <div id="optimization" class="tab-content">
+            <div class="card">
+                <h2>Optimization Suggestions</h2>
+                <div class="alert alert-info">
+                    AI-powered suggestions to optimize locker allocation and capacity.
+                </div>
+                <div id="optimizationContent" class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Logs Tab -->
+        <div id="audit" class="tab-content">
+            <div class="card">
+                <h2>Audit Logs</h2>
+                <div id="auditContent" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading audit logs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentTab = 'dashboard';
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+
+            // Load data for the tab
+            loadTabData(tabName);
+        }
+
+        async function loadTabData(tabName) {
+            switch(tabName) {
+                case 'dashboard':
+                    await loadDashboard();
+                    break;
+                case 'lockers':
+                    await loadLockers();
+                    break;
+                case 'health':
+                    await loadHealthChecks();
+                    break;
+                case 'analytics':
+                    await loadAnalytics();
+                    break;
+                case 'optimization':
+                    await loadOptimization();
+                    break;
+                case 'audit':
+                    await loadAuditLogs();
+                    break;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayDashboard(result.data);
+                }
+            } catch (error) {
+                document.getElementById('dashboardStats').innerHTML =
+                    `<div class="alert alert-danger">Error loading dashboard: ${error.message}</div>`;
+            }
+        }
+
+        function displayDashboard(data) {
+            const stats = data.stats;
+            const occupancyRate = ((stats.occupiedSlots.count + stats.reservedSlots.count) / stats.totalSlots.count * 100).toFixed(1);
+            const successRate = (stats.successfulPickups.count / stats.totalReservations.count * 100).toFixed(1);
+
+            document.getElementById('dashboardStats').innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Active Locations</div>
+                        <div class="stat-value">${stats.locations.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Operational Lockers</div>
+                        <div class="stat-value">${stats.lockers.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Slots</div>
+                        <div class="stat-value">${stats.totalSlots.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Available Slots</div>
+                        <div class="stat-value" style="color: #10b981;">${stats.availableSlots.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Occupied Slots</div>
+                        <div class="stat-value" style="color: #f59e0b;">${stats.occupiedSlots.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Occupancy Rate</div>
+                        <div class="stat-value" style="color: #667eea;">${occupancyRate}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Reservations</div>
+                        <div class="stat-value">${stats.activeReservations.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Successful Pickups</div>
+                        <div class="stat-value" style="color: #10b981;">${stats.successfulPickups.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Expired</div>
+                        <div class="stat-value" style="color: #ef4444;">${stats.expiredReservations.count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Success Rate</div>
+                        <div class="stat-value" style="color: #10b981;">${successRate}%</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <button class="btn btn-primary" onclick="processExpired()">Process Expired Reservations</button>
+                    <button class="btn btn-secondary" onclick="loadOverfillReport()" style="margin-left: 10px;">View Overfill Report</button>
+                </div>
+            `;
+        }
+
+        async function loadLockers() {
+            try {
+                const response = await fetch(`${API_URL}/admin/lockers`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayLockers(result.data);
+                }
+            } catch (error) {
+                document.getElementById('lockersContent').innerHTML =
+                    `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayLockers(lockers) {
+            document.getElementById('lockersContent').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Location</th>
+                            <th>Locker Number</th>
+                            <th>Status</th>
+                            <th>Slots</th>
+                            <th>Available</th>
+                            <th>Occupied</th>
+                            <th>Occupancy</th>
+                            <th>Health</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${lockers.map(locker => {
+                            const occupancyRate = ((locker.occupied + locker.reserved) / locker.actual_slots * 100).toFixed(1);
+                            const statusClass = locker.status === 'operational' ? 'success' :
+                                              locker.status === 'maintenance' ? 'warning' : 'danger';
+                            const healthClass = locker.health_status === 'pass' ? 'success' :
+                                              locker.health_status === 'warning' ? 'warning' : 'danger';
+
+                            return `
+                                <tr>
+                                    <td>${locker.id}</td>
+                                    <td>${locker.location_name}, ${locker.city}</td>
+                                    <td><strong>${locker.locker_number}</strong></td>
+                                    <td><span class="badge badge-${statusClass}">${locker.status}</span></td>
+                                    <td>${locker.actual_slots}</td>
+                                    <td>${locker.available || 0}</td>
+                                    <td>${locker.occupied || 0}</td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${occupancyRate}%"></div>
+                                        </div>
+                                        <small>${occupancyRate}%</small>
+                                    </td>
+                                    <td>${locker.health_status ? `<span class="badge badge-${healthClass}">${locker.health_status}</span>` : '-'}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="performHealthCheck(${locker.id})">Health Check</button>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function performHealthCheck(lockerId) {
+            try {
+                const response = await fetch(`${API_URL}/admin/lockers/${lockerId}/health-check`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Health Check Complete!\nStatus: ${result.data.status}\nDetails: ${result.data.details.join(', ') || 'All checks passed'}`);
+                    loadLockers(); // Refresh
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadHealthChecks() {
+            document.getElementById('healthContent').innerHTML = `
+                <div class="alert alert-info">Select a locker from the Lockers tab to view its health history.</div>
+            `;
+        }
+
+        async function loadAnalytics() {
+            try {
+                const [utilizationRes, performanceRes] = await Promise.all([
+                    fetch(`${API_URL}/admin/analytics/utilization?days=7`),
+                    fetch(`${API_URL}/admin/locations/performance`)
+                ]);
+
+                const utilization = await utilizationRes.json();
+                const performance = await performanceRes.json();
+
+                if (utilization.success) {
+                    displayUtilization(utilization.data);
+                }
+
+                if (performance.success) {
+                    displayPerformance(performance.data);
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        function displayUtilization(data) {
+            document.getElementById('analyticsContent').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Total Reservations</th>
+                            <th>Successful Pickups</th>
+                            <th>Expired</th>
+                            <th>Success Rate</th>
+                            <th>Avg Pickup Time (hrs)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(row => {
+                            const successRate = (row.successful_pickups / row.total_reservations * 100).toFixed(1);
+                            return `
+                                <tr>
+                                    <td>${row.date}</td>
+                                    <td>${row.total_reservations}</td>
+                                    <td>${row.successful_pickups}</td>
+                                    <td>${row.expired}</td>
+                                    <td><span class="badge badge-success">${successRate}%</span></td>
+                                    <td>${row.avg_pickup_time_hours ? row.avg_pickup_time_hours.toFixed(1) : '-'}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function displayPerformance(data) {
+            document.getElementById('performanceContent').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Lockers</th>
+                            <th>Total Slots</th>
+                            <th>Available</th>
+                            <th>Occupancy</th>
+                            <th>Total Reservations</th>
+                            <th>Success Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(loc => {
+                            const occupancy = (loc.current_occupancy_rate * 100).toFixed(1);
+                            const successRate = (loc.success_rate * 100).toFixed(1);
+                            return `
+                                <tr>
+                                    <td><strong>${loc.name}</strong><br><small>${loc.city}, ${loc.state}</small></td>
+                                    <td>${loc.total_lockers}</td>
+                                    <td>${loc.total_slots}</td>
+                                    <td>${loc.available_slots}</td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${occupancy}%"></div>
+                                        </div>
+                                        <small>${occupancy}%</small>
+                                    </td>
+                                    <td>${loc.total_reservations}</td>
+                                    <td><span class="badge badge-success">${successRate}%</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function loadOptimization() {
+            try {
+                const response = await fetch(`${API_URL}/admin/optimization`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayOptimization(result.data);
+                }
+            } catch (error) {
+                document.getElementById('optimizationContent').innerHTML =
+                    `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayOptimization(data) {
+            document.getElementById('optimizationContent').innerHTML = `
+                <div class="grid-2">
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Underutilized Lockers</h3>
+                        ${data.underutilizedLockers.length > 0 ? `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Locker</th>
+                                        <th>Location</th>
+                                        <th>Occupancy</th>
+                                        <th>Reservations (30d)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.underutilizedLockers.map(locker => `
+                                        <tr>
+                                            <td>${locker.locker_number}</td>
+                                            <td>${locker.location_name}</td>
+                                            <td>${(locker.current_occupancy * 100).toFixed(1)}%</td>
+                                            <td>${locker.total_reservations}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        ` : '<p>No underutilized lockers found.</p>'}
+                    </div>
+
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Locations Needing Capacity</h3>
+                        ${data.locationsNeedingCapacity.length > 0 ? `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Active Lockers</th>
+                                        <th>Occupancy</th>
+                                        <th>Reservations (30d)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.locationsNeedingCapacity.map(loc => `
+                                        <tr>
+                                            <td>${loc.name}</td>
+                                            <td>${loc.active_lockers}</td>
+                                            <td><span class="badge badge-warning">${(loc.occupancy_rate * 100).toFixed(1)}%</span></td>
+                                            <td>${loc.reservations_last_30_days}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        ` : '<p>All locations have adequate capacity.</p>'}
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 15px;">Slot Size Distribution & Utilization</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Size</th>
+                            <th>Total Slots</th>
+                            <th>Available</th>
+                            <th>Reservations (30d)</th>
+                            <th>Utilization Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.sizeDistribution.map(size => `
+                            <tr>
+                                <td><strong>${size.size.replace('_', ' ').toUpperCase()}</strong></td>
+                                <td>${size.total_slots}</td>
+                                <td>${size.available}</td>
+                                <td>${size.reservations_last_30_days}</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${size.utilization_rate * 100}%"></div>
+                                    </div>
+                                    <small>${(size.utilization_rate * 100).toFixed(1)}%</small>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function loadAuditLogs() {
+            try {
+                const response = await fetch(`${API_URL}/admin/audit-logs?limit=100`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayAuditLogs(result.data);
+                }
+            } catch (error) {
+                document.getElementById('auditContent').innerHTML =
+                    `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayAuditLogs(logs) {
+            document.getElementById('auditContent').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Entity</th>
+                            <th>Action</th>
+                            <th>User Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${logs.map(log => `
+                            <tr>
+                                <td><small>${new Date(log.created_at).toLocaleString()}</small></td>
+                                <td>${log.entity_type} #${log.entity_id}</td>
+                                <td><span class="badge badge-info">${log.action}</span></td>
+                                <td>${log.user_type}</td>
+                                <td><small>${log.new_value ? log.new_value.substring(0, 100) : '-'}</small></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function processExpired() {
+            if (!confirm('Process all expired reservations? This will free up slots.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/admin/process-expired`, { method: 'POST' });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Success! Processed ${result.data.processedCount} expired reservations.`);
+                    loadDashboard();
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadOverfillReport() {
+            try {
+                const response = await fetch(`${API_URL}/admin/overfill-report?threshold=0.8`);
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.data.length === 0) {
+                        alert('No overfilled lockers found!');
+                    } else {
+                        let report = 'OVERFILL REPORT (≥80% capacity):\n\n';
+                        result.data.forEach(locker => {
+                            report += `${locker.location_name} - ${locker.locker_number}: ${(locker.occupancy_rate * 100).toFixed(1)}% full\n`;
+                        });
+                        alert(report);
+                    }
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Initialize
+        loadDashboard();
+    </script>
+</body>
+</html>
