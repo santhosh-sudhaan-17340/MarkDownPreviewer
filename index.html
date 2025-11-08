@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown File Previewer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Using marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Using highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📝 Markdown File Previewer</h1>
+            <div class="toolbar">
+                <label for="file-upload" class="btn btn-primary">
+                    📁 Upload .md
+                    <input type="file" id="file-upload" accept=".md,.markdown,.txt" hidden>
+                </label>
+                <button id="download-btn" class="btn btn-secondary">💾 Download</button>
+                <button id="clear-btn" class="btn btn-danger">🗑️ Clear</button>
+                <button id="toggle-theme" class="btn btn-secondary">🌓 Theme</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Editor Panel -->
+            <div class="panel editor-panel">
+                <div class="panel-header">
+                    <h2>Markdown Editor</h2>
+                    <span class="word-count" id="word-count">0 words</span>
+                </div>
+                <textarea id="markdown-input" placeholder="# Start typing markdown here...
+
+## Features
+- Live preview
+- Syntax highlighting
+- File upload/download
+- Auto-save
+
+Try editing this text to see the preview!
+
+```javascript
+// Code blocks are highlighted
+function hello() {
+    console.log('Hello, Markdown!');
+}
+```
+
+**Bold** and *italic* text works too!
+
+[Links](https://example.com) | ![Images](https://via.placeholder.com/150)
+
+> Blockquotes are supported
+>
+> - Lists
+> - Tables
+> - And more!"></textarea>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="panel preview-panel">
+                <div class="panel-header">
+                    <h2>Preview</h2>
+                    <button id="copy-html" class="btn-small">📋 Copy HTML</button>
+                </div>
+                <div id="preview-content" class="preview-content"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Markdown File Previewer | Auto-saves to local storage</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
