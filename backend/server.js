@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -6,11 +7,16 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const sequelize = require('./config/database');
+const initializeWebSocket = require('./websocket');
+
+// Import routes
 const ticketRoutes = require('./routes/ticketRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const enhancedRoutes = require('./routes/enhancedRoutes');
 
 const app = express();
+const server = http.createServer(app);
 
 // Security middleware
 app.use(helmet());
@@ -41,6 +47,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api', enhancedRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -76,10 +83,15 @@ const startServer = async () => {
       console.log('Database models synchronized.');
     }
 
+    // Initialize WebSocket
+    initializeWebSocket(server);
+    console.log('WebSocket server initialized.');
+
     // Start server
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`WebSocket available at ws://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Unable to start server:', error);
@@ -89,4 +101,4 @@ const startServer = async () => {
 
 startServer();
 
-module.exports = app;
+module.exports = { app, server };
