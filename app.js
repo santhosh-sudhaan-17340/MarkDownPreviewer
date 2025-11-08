@@ -1,547 +1,354 @@
-// ===== Application State =====
-const APP_STATE = {
-    theme: localStorage.getItem('theme') || 'light',
-    syncScroll: true,
-    undoStack: [],
-    redoStack: [],
-    currentContent: '',
-    autosaveTimeout: null,
-    isResizing: false,
-    isScrollingFromEditor: false,
-    startX: 0,
-    startWidth: 0
+// ===== Game State =====
+const GAME_STATE = {
+    players: ['red', 'green', 'yellow', 'blue'],
+    currentPlayerIndex: 0,
+    diceValue: null,
+    gameOver: false,
+    tokens: {
+        red: [
+            { position: 'home', pathIndex: -1, id: 0 },
+            { position: 'home', pathIndex: -1, id: 1 },
+            { position: 'home', pathIndex: -1, id: 2 },
+            { position: 'home', pathIndex: -1, id: 3 }
+        ],
+        green: [
+            { position: 'home', pathIndex: -1, id: 0 },
+            { position: 'home', pathIndex: -1, id: 1 },
+            { position: 'home', pathIndex: -1, id: 2 },
+            { position: 'home', pathIndex: -1, id: 3 }
+        ],
+        yellow: [
+            { position: 'home', pathIndex: -1, id: 0 },
+            { position: 'home', pathIndex: -1, id: 1 },
+            { position: 'home', pathIndex: -1, id: 2 },
+            { position: 'home', pathIndex: -1, id: 3 }
+        ],
+        blue: [
+            { position: 'home', pathIndex: -1, id: 0 },
+            { position: 'home', pathIndex: -1, id: 1 },
+            { position: 'home', pathIndex: -1, id: 2 },
+            { position: 'home', pathIndex: -1, id: 3 }
+        ]
+    },
+    scores: { red: 0, green: 0, yellow: 0, blue: 0 }
 };
+
+// Game constants
+const START_POSITIONS = { red: 0, green: 13, yellow: 26, blue: 39 };
+const SAFE_POSITIONS = [0, 8, 13, 21, 26, 34, 39, 47]; // Star positions
+const PATH_LENGTH = 52; // Total cells in the circular path
+const HOME_STRETCH_LENGTH = 6; // Cells to reach home
 
 // ===== DOM Elements =====
 const elements = {
-    editor: document.getElementById('editor'),
-    preview: document.getElementById('preview'),
-    themeToggle: document.getElementById('themeToggle'),
-    sunIcon: document.querySelector('.sun-icon'),
-    moonIcon: document.querySelector('.moon-icon'),
-    importBtn: document.getElementById('importBtn'),
-    fileInput: document.getElementById('fileInput'),
-    exportMdBtn: document.getElementById('exportMdBtn'),
-    exportPdfBtn: document.getElementById('exportPdfBtn'),
-    undoBtn: document.getElementById('undoBtn'),
-    redoBtn: document.getElementById('redoBtn'),
-    saveStatus: document.getElementById('saveStatus'),
-    shortcutsModal: document.getElementById('shortcutsModal'),
-    resizeHandle: document.getElementById('resizeHandle'),
-    editorContainer: document.querySelector('.editor-container'),
-    previewContainer: document.querySelector('.preview-container')
+    rollDiceBtn: document.getElementById('rollDiceBtn'),
+    dice: document.getElementById('dice'),
+    diceFace: document.querySelector('.dice-face'),
+    messageBox: document.getElementById('messageBox'),
+    currentPlayerName: document.getElementById('currentPlayerName'),
+    resetBtn: document.getElementById('resetBtn'),
+    redScore: document.getElementById('redScore'),
+    greenScore: document.getElementById('greenScore'),
+    yellowScore: document.getElementById('yellowScore'),
+    blueScore: document.getElementById('blueScore')
 };
-
-// ===== Configure Marked.js =====
-marked.setOptions({
-    highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-            try {
-                return hljs.highlight(code, { language: lang }).value;
-            } catch (err) {
-                console.error('Highlight error:', err);
-            }
-        }
-        return hljs.highlightAuto(code).value;
-    },
-    breaks: true,
-    gfm: true,
-    headerIds: true,
-    mangle: false,
-    pedantic: false,
-    sanitize: false,
-    smartLists: true,
-    smartypants: true,
-    xhtml: false
-});
 
 // ===== Initialization =====
 function init() {
-    // Apply saved theme
-    applyTheme(APP_STATE.theme);
-
-    // Load saved content
-    loadContent();
-
-    // Initialize event listeners
-    initEventListeners();
-
-    // Initial render
-    updatePreview();
-
-    // Update button states
-    updateUndoRedoButtons();
-
-    console.log('Markdown Previewer initialized successfully');
+    setupEventListeners();
+    updateUI();
+    showMessage('Welcome to Ludo! Red player starts. Roll the dice!');
 }
 
-// ===== Theme Management =====
-function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    APP_STATE.theme = theme;
-    localStorage.setItem('theme', theme);
+function setupEventListeners() {
+    elements.rollDiceBtn.addEventListener('click', rollDice);
+    elements.resetBtn.addEventListener('click', resetGame);
 
-    const highlightLight = document.getElementById('highlight-light');
-    const highlightDark = document.getElementById('highlight-dark');
+    // Add click listeners to all tokens
+    const tokenSlots = document.querySelectorAll('.token-slot');
+    tokenSlots.forEach(slot => {
+        slot.addEventListener('click', () => handleTokenClick(slot));
+    });
+}
 
-    if (theme === 'dark') {
-        elements.sunIcon.style.display = 'none';
-        elements.moonIcon.style.display = 'block';
-        highlightLight.disabled = true;
-        highlightDark.disabled = false;
-    } else {
-        elements.sunIcon.style.display = 'block';
-        elements.moonIcon.style.display = 'none';
-        highlightLight.disabled = false;
-        highlightDark.disabled = true;
+// ===== Dice Functions =====
+function rollDice() {
+    if (GAME_STATE.gameOver) {
+        showMessage('Game is over! Click "New Game" to play again.');
+        return;
     }
-}
 
-function toggleTheme() {
-    const newTheme = APP_STATE.theme === 'light' ? 'dark' : 'light';
-    applyTheme(newTheme);
-}
+    // Disable button during roll
+    elements.rollDiceBtn.disabled = true;
+    elements.dice.classList.add('rolling');
 
-// ===== Markdown Rendering =====
-function updatePreview() {
-    const markdown = elements.editor.value;
-    try {
-        // Save current scroll position
-        const currentScrollTop = elements.preview.scrollTop;
+    // Animate dice
+    let rollCount = 0;
+    const rollInterval = setInterval(() => {
+        elements.diceFace.textContent = Math.floor(Math.random() * 6) + 1;
+        rollCount++;
 
-        const html = marked.parse(markdown);
-        elements.preview.innerHTML = html;
+        if (rollCount >= 10) {
+            clearInterval(rollInterval);
+            const finalValue = Math.floor(Math.random() * 6) + 1;
+            GAME_STATE.diceValue = finalValue;
+            elements.diceFace.textContent = finalValue;
+            elements.dice.classList.remove('rolling');
 
-        // Re-apply syntax highlighting
-        elements.preview.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block);
-        });
-
-        // Handle checkboxes in task lists
-        elements.preview.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-            checkbox.disabled = true; // Make checkboxes read-only in preview
-        });
-
-        // Restore scroll position (only if not syncing from editor)
-        if (!APP_STATE.isScrollingFromEditor) {
-            elements.preview.scrollTop = currentScrollTop;
+            handleDiceRoll(finalValue);
         }
-    } catch (error) {
-        console.error('Markdown parsing error:', error);
-        elements.preview.innerHTML = `<p style="color: red;">Error parsing Markdown: ${error.message}</p>`;
-    }
-}
-
-// ===== Debounced Preview Update =====
-let updateTimeout;
-function debouncedUpdatePreview() {
-    clearTimeout(updateTimeout);
-    updateTimeout = setTimeout(() => {
-        updatePreview();
     }, 50);
 }
 
-// ===== Undo/Redo System =====
-function saveState() {
-    const content = elements.editor.value;
+function handleDiceRoll(value) {
+    const currentPlayer = GAME_STATE.players[GAME_STATE.currentPlayerIndex];
+    showMessage(`${capitalizeFirst(currentPlayer)} rolled a ${value}!`);
 
-    // Don't save if content hasn't changed
-    if (content === APP_STATE.currentContent) {
-        return;
-    }
+    // Check if player has any valid moves
+    const validMoves = getValidMoves(currentPlayer, value);
 
-    // Add current state to undo stack
-    if (APP_STATE.currentContent !== '') {
-        APP_STATE.undoStack.push(APP_STATE.currentContent);
+    if (validMoves.length === 0) {
+        showMessage(`${capitalizeFirst(currentPlayer)} has no valid moves. Next player's turn.`);
 
-        // Limit undo stack to 50 items
-        if (APP_STATE.undoStack.length > 50) {
-            APP_STATE.undoStack.shift();
+        // Only give another turn if they rolled a 6
+        if (value !== 6) {
+            setTimeout(() => nextTurn(), 1500);
+        } else {
+            elements.rollDiceBtn.disabled = false;
         }
-    }
-
-    APP_STATE.currentContent = content;
-    APP_STATE.redoStack = []; // Clear redo stack on new action
-
-    updateUndoRedoButtons();
-}
-
-function undo() {
-    if (APP_STATE.undoStack.length === 0) {
-        return;
-    }
-
-    // Save current state to redo stack
-    APP_STATE.redoStack.push(APP_STATE.currentContent);
-
-    // Pop from undo stack
-    const previousState = APP_STATE.undoStack.pop();
-    APP_STATE.currentContent = previousState;
-
-    // Update editor
-    elements.editor.value = previousState;
-    updatePreview();
-    updateUndoRedoButtons();
-
-    // Save to localStorage
-    saveContent();
-}
-
-function redo() {
-    if (APP_STATE.redoStack.length === 0) {
-        return;
-    }
-
-    // Save current state to undo stack
-    APP_STATE.undoStack.push(APP_STATE.currentContent);
-
-    // Pop from redo stack
-    const nextState = APP_STATE.redoStack.pop();
-    APP_STATE.currentContent = nextState;
-
-    // Update editor
-    elements.editor.value = nextState;
-    updatePreview();
-    updateUndoRedoButtons();
-
-    // Save to localStorage
-    saveContent();
-}
-
-function updateUndoRedoButtons() {
-    elements.undoBtn.disabled = APP_STATE.undoStack.length === 0;
-    elements.redoBtn.disabled = APP_STATE.redoStack.length === 0;
-
-    elements.undoBtn.style.opacity = APP_STATE.undoStack.length === 0 ? '0.5' : '1';
-    elements.redoBtn.style.opacity = APP_STATE.redoStack.length === 0 ? '0.5' : '1';
-}
-
-// ===== Local Storage =====
-function saveContent() {
-    const content = elements.editor.value;
-    localStorage.setItem('markdownContent', content);
-
-    // Show save indicator
-    elements.saveStatus.textContent = 'Autosaved';
-    elements.saveStatus.classList.add('show');
-
-    setTimeout(() => {
-        elements.saveStatus.classList.remove('show');
-    }, 2000);
-}
-
-function loadContent() {
-    const savedContent = localStorage.getItem('markdownContent');
-
-    if (savedContent) {
-        elements.editor.value = savedContent;
-        APP_STATE.currentContent = savedContent;
     } else {
-        // Load default example content
-        const defaultContent = `# Welcome to Markdown Previewer
-
-Start typing your **Markdown** here and see the *live preview* instantly!
-
-## Quick Examples
-
-\`\`\`javascript
-console.log("Hello, World!");
-\`\`\`
-
-- Use **Ctrl+T** to toggle theme
-- Use **Ctrl+S** to export as .md
-- Use **Ctrl+/** to see all shortcuts
-`;
-        elements.editor.value = defaultContent;
-        APP_STATE.currentContent = defaultContent;
+        // Highlight valid tokens
+        highlightValidTokens(currentPlayer, validMoves);
+        showMessage(`${capitalizeFirst(currentPlayer)}, select a token to move.`);
     }
 }
 
-function autosave() {
-    // Clear existing timeout
-    clearTimeout(APP_STATE.autosaveTimeout);
+function getValidMoves(player, diceValue) {
+    const validMoves = [];
+    const tokens = GAME_STATE.tokens[player];
 
-    // Set new timeout
-    APP_STATE.autosaveTimeout = setTimeout(() => {
-        saveContent();
-    }, 1000);
-}
+    tokens.forEach(token => {
+        if (token.position === 'home') {
+            // Can only leave home with a 6
+            if (diceValue === 6) {
+                validMoves.push(token.id);
+            }
+        } else if (token.position === 'path') {
+            // Check if move would be valid
+            const newPosition = token.pathIndex + diceValue;
+            const homeStretchStart = PATH_LENGTH;
+            const homeStretchEnd = PATH_LENGTH + HOME_STRETCH_LENGTH;
 
-// ===== File Operations =====
-function importFile() {
-    elements.fileInput.click();
-}
-
-function handleFileImport(event) {
-    const file = event.target.files[0];
-
-    if (!file) {
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-        const content = e.target.result;
-
-        // Save current state before importing
-        saveState();
-
-        elements.editor.value = content;
-        APP_STATE.currentContent = content;
-        updatePreview();
-        saveContent();
-
-        // Reset file input
-        elements.fileInput.value = '';
-    };
-
-    reader.onerror = function(e) {
-        alert('Error reading file: ' + e.target.error);
-    };
-
-    reader.readAsText(file);
-}
-
-function exportMarkdown() {
-    const content = elements.editor.value;
-    const blob = new Blob([content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-
-    a.href = url;
-    a.download = `markdown-${Date.now()}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function exportPDF() {
-    const previewClone = elements.preview.cloneNode(true);
-
-    // Create a temporary container with proper styling
-    const container = document.createElement('div');
-    container.style.padding = '40px';
-    container.style.backgroundColor = 'white';
-    container.style.color = '#212529';
-    container.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
-    container.style.fontSize = '14px';
-    container.style.lineHeight = '1.6';
-    container.appendChild(previewClone);
-
-    // Configure PDF options
-    const opt = {
-        margin: 10,
-        filename: `markdown-${Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // Generate PDF
-    html2pdf().set(opt).from(container).save();
-}
-
-// ===== Scroll Synchronization =====
-function syncScroll(source) {
-    if (!APP_STATE.syncScroll) {
-        return;
-    }
-
-    const target = source === elements.editor ? elements.preview : elements.editor;
-
-    const sourceScrollPercent = source.scrollTop / (source.scrollHeight - source.clientHeight);
-    const targetScrollTop = sourceScrollPercent * (target.scrollHeight - target.clientHeight);
-
-    // Set flag to prevent preview from restoring its scroll position
-    if (source === elements.editor) {
-        APP_STATE.isScrollingFromEditor = true;
-    }
-
-    target.scrollTop = targetScrollTop;
-
-    // Reset flag after scroll is applied
-    setTimeout(() => {
-        APP_STATE.isScrollingFromEditor = false;
-    }, 100);
-}
-
-// ===== Panel Resizing =====
-function initResize(e) {
-    APP_STATE.isResizing = true;
-    APP_STATE.startX = e.clientX;
-    APP_STATE.startWidth = elements.editorContainer.offsetWidth;
-
-    document.addEventListener('mousemove', resize);
-    document.addEventListener('mouseup', stopResize);
-
-    elements.resizeHandle.style.backgroundColor = 'var(--accent-color)';
-}
-
-function resize(e) {
-    if (!APP_STATE.isResizing) {
-        return;
-    }
-
-    const dx = e.clientX - APP_STATE.startX;
-    const newWidth = APP_STATE.startWidth + dx;
-    const containerWidth = elements.editorContainer.parentElement.offsetWidth;
-
-    // Set minimum and maximum widths
-    const minWidth = 200;
-    const maxWidth = containerWidth - 200;
-
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
-        const percentage = (newWidth / containerWidth) * 100;
-        elements.editorContainer.style.flex = `0 0 ${percentage}%`;
-        elements.previewContainer.style.flex = `1`;
-    }
-}
-
-function stopResize() {
-    APP_STATE.isResizing = false;
-    document.removeEventListener('mousemove', resize);
-    document.removeEventListener('mouseup', stopResize);
-    elements.resizeHandle.style.backgroundColor = '';
-}
-
-// ===== Keyboard Shortcuts =====
-function handleKeyboardShortcuts(e) {
-    // Ctrl/Cmd + O: Import file
-    if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
-        e.preventDefault();
-        importFile();
-    }
-
-    // Ctrl/Cmd + S: Export Markdown
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        exportMarkdown();
-    }
-
-    // Ctrl/Cmd + P: Export PDF
-    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-        e.preventDefault();
-        exportPDF();
-    }
-
-    // Ctrl/Cmd + Z: Undo
-    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-        e.preventDefault();
-        undo();
-    }
-
-    // Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z: Redo
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
-        e.preventDefault();
-        redo();
-    }
-
-    // Ctrl/Cmd + T: Toggle theme
-    if ((e.ctrlKey || e.metaKey) && e.key === 't') {
-        e.preventDefault();
-        toggleTheme();
-    }
-
-    // Ctrl/Cmd + /: Show shortcuts modal
-    if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-        e.preventDefault();
-        toggleShortcutsModal();
-    }
-
-    // Ctrl/Cmd + B: Bold
-    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-        e.preventDefault();
-        wrapSelection('**', '**');
-    }
-
-    // Ctrl/Cmd + I: Italic
-    if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
-        e.preventDefault();
-        wrapSelection('*', '*');
-    }
-}
-
-function wrapSelection(before, after) {
-    const textarea = elements.editor;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    const beforeText = textarea.value.substring(0, start);
-    const afterText = textarea.value.substring(end);
-
-    const newText = beforeText + before + selectedText + after + afterText;
-
-    saveState();
-    textarea.value = newText;
-
-    // Set cursor position
-    const newCursorPos = start + before.length + selectedText.length + after.length;
-    textarea.setSelectionRange(newCursorPos, newCursorPos);
-
-    updatePreview();
-    autosave();
-}
-
-// ===== Shortcuts Modal =====
-function toggleShortcutsModal() {
-    elements.shortcutsModal.classList.toggle('show');
-}
-
-function closeShortcutsModal(e) {
-    if (e.target === elements.shortcutsModal || e.target.classList.contains('modal-close')) {
-        elements.shortcutsModal.classList.remove('show');
-    }
-}
-
-// ===== Event Listeners =====
-function initEventListeners() {
-    // Editor events
-    elements.editor.addEventListener('input', (e) => {
-        debouncedUpdatePreview();
-        autosave();
-
-        // Don't save state on every keystroke (too expensive)
-        // State is saved on specific actions like undo/redo/import
-    });
-
-    elements.editor.addEventListener('scroll', () => syncScroll(elements.editor));
-    elements.preview.addEventListener('scroll', () => syncScroll(elements.preview));
-
-    // Toolbar events
-    elements.themeToggle.addEventListener('click', toggleTheme);
-    elements.importBtn.addEventListener('click', importFile);
-    elements.fileInput.addEventListener('change', handleFileImport);
-    elements.exportMdBtn.addEventListener('click', exportMarkdown);
-    elements.exportPdfBtn.addEventListener('click', exportPDF);
-    elements.undoBtn.addEventListener('click', undo);
-    elements.redoBtn.addEventListener('click', redo);
-
-    // Resize handle
-    elements.resizeHandle.addEventListener('mousedown', initResize);
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', handleKeyboardShortcuts);
-
-    // Modal events
-    elements.shortcutsModal.addEventListener('click', closeShortcutsModal);
-
-    // Before unload - save state
-    window.addEventListener('beforeunload', () => {
-        saveContent();
-    });
-
-    // Save state periodically (every 30 seconds)
-    setInterval(() => {
-        if (elements.editor.value !== APP_STATE.currentContent) {
-            saveState();
+            // Check if token is approaching or in home stretch
+            if (token.pathIndex < homeStretchStart && newPosition >= homeStretchStart) {
+                // Entering home stretch
+                if (newPosition <= homeStretchEnd) {
+                    validMoves.push(token.id);
+                }
+            } else if (token.pathIndex >= homeStretchStart) {
+                // Already in home stretch
+                if (newPosition <= homeStretchEnd) {
+                    validMoves.push(token.id);
+                }
+            } else if (newPosition < homeStretchStart) {
+                // Normal move
+                validMoves.push(token.id);
+            }
         }
-    }, 30000);
+    });
+
+    return validMoves;
 }
 
-// ===== Start Application =====
-// Initialize when DOM is ready
+function highlightValidTokens(player, validMoves) {
+    // Remove all previous highlights
+    document.querySelectorAll('.token-slot.selectable').forEach(slot => {
+        slot.classList.remove('selectable');
+    });
+
+    // Highlight valid tokens
+    validMoves.forEach(tokenId => {
+        const slot = document.querySelector(`.token-slot[data-player="${player}"][data-token="${tokenId}"]`);
+        if (slot) {
+            slot.classList.add('selectable');
+        }
+    });
+}
+
+function handleTokenClick(slot) {
+    if (!slot.classList.contains('selectable')) {
+        return;
+    }
+
+    const player = slot.dataset.player;
+    const tokenId = parseInt(slot.dataset.token);
+    const currentPlayer = GAME_STATE.players[GAME_STATE.currentPlayerIndex];
+
+    if (player !== currentPlayer) {
+        return;
+    }
+
+    moveToken(player, tokenId, GAME_STATE.diceValue);
+}
+
+// ===== Token Movement =====
+function moveToken(player, tokenId, steps) {
+    const token = GAME_STATE.tokens[player][tokenId];
+    const diceValue = steps;
+
+    if (token.position === 'home') {
+        // Move token to start position
+        token.position = 'path';
+        token.pathIndex = 0;
+        showMessage(`${capitalizeFirst(player)} token entered the board!`);
+    } else {
+        // Move token along the path
+        token.pathIndex += steps;
+
+        // Check if token reached home
+        if (token.pathIndex >= PATH_LENGTH + HOME_STRETCH_LENGTH) {
+            token.position = 'finished';
+            GAME_STATE.scores[player]++;
+            showMessage(`${capitalizeFirst(player)} got a token home! 🎉`);
+
+            // Check for win
+            if (GAME_STATE.scores[player] === 4) {
+                gameWon(player);
+                return;
+            }
+        } else if (token.pathIndex < PATH_LENGTH) {
+            // Check for capturing opponent tokens
+            checkForCapture(player, token.pathIndex);
+        }
+    }
+
+    // Update UI
+    updateUI();
+    clearHighlights();
+
+    // Check if player rolled a 6
+    if (diceValue === 6) {
+        showMessage(`${capitalizeFirst(player)} rolled a 6! Roll again.`);
+        elements.rollDiceBtn.disabled = false;
+    } else {
+        setTimeout(() => nextTurn(), 1000);
+    }
+}
+
+function checkForCapture(currentPlayer, position) {
+    // Don't capture on safe positions
+    if (SAFE_POSITIONS.includes(position % PATH_LENGTH)) {
+        return;
+    }
+
+    // Check all other players' tokens
+    GAME_STATE.players.forEach(player => {
+        if (player === currentPlayer) return;
+
+        GAME_STATE.tokens[player].forEach(token => {
+            if (token.position === 'path' && token.pathIndex === position) {
+                // Capture the token - send it back home
+                token.position = 'home';
+                token.pathIndex = -1;
+                showMessage(`${capitalizeFirst(currentPlayer)} captured ${player}'s token!`);
+            }
+        });
+    });
+}
+
+// ===== Turn Management =====
+function nextTurn() {
+    GAME_STATE.currentPlayerIndex = (GAME_STATE.currentPlayerIndex + 1) % GAME_STATE.players.length;
+    const nextPlayer = GAME_STATE.players[GAME_STATE.currentPlayerIndex];
+
+    updateUI();
+    showMessage(`${capitalizeFirst(nextPlayer)}'s turn. Roll the dice!`);
+    elements.rollDiceBtn.disabled = false;
+}
+
+function clearHighlights() {
+    document.querySelectorAll('.token-slot.selectable').forEach(slot => {
+        slot.classList.remove('selectable');
+    });
+}
+
+// ===== Game End =====
+function gameWon(player) {
+    GAME_STATE.gameOver = true;
+    showMessage(`🎊 ${capitalizeFirst(player)} wins the game! Congratulations! 🎊`);
+    elements.rollDiceBtn.disabled = true;
+    clearHighlights();
+}
+
+function resetGame() {
+    // Reset game state
+    GAME_STATE.currentPlayerIndex = 0;
+    GAME_STATE.diceValue = null;
+    GAME_STATE.gameOver = false;
+    GAME_STATE.scores = { red: 0, green: 0, yellow: 0, blue: 0 };
+
+    // Reset all tokens
+    GAME_STATE.players.forEach(player => {
+        GAME_STATE.tokens[player].forEach(token => {
+            token.position = 'home';
+            token.pathIndex = -1;
+        });
+    });
+
+    // Reset UI
+    elements.diceFace.textContent = '?';
+    elements.rollDiceBtn.disabled = false;
+    clearHighlights();
+    updateUI();
+    showMessage('New game started! Red player begins. Roll the dice!');
+}
+
+// ===== UI Updates =====
+function updateUI() {
+    // Update current player badge
+    const currentPlayer = GAME_STATE.players[GAME_STATE.currentPlayerIndex];
+    elements.currentPlayerName.textContent = capitalizeFirst(currentPlayer);
+    elements.currentPlayerName.className = `player-badge ${currentPlayer}`;
+
+    // Update scores
+    elements.redScore.textContent = `${GAME_STATE.scores.red}/4 tokens home`;
+    elements.greenScore.textContent = `${GAME_STATE.scores.green}/4 tokens home`;
+    elements.yellowScore.textContent = `${GAME_STATE.scores.yellow}/4 tokens home`;
+    elements.blueScore.textContent = `${GAME_STATE.scores.blue}/4 tokens home`;
+
+    // Update token positions visually
+    updateTokenPositions();
+}
+
+function updateTokenPositions() {
+    // Clear all token slots first
+    document.querySelectorAll('.token-slot').forEach(slot => {
+        slot.innerHTML = '';
+        const player = slot.dataset.player;
+        const tokenId = parseInt(slot.dataset.token);
+        const token = GAME_STATE.tokens[player][tokenId];
+
+        // If token is at home, show it in the home slot
+        if (token.position === 'home') {
+            const tokenDiv = document.createElement('div');
+            tokenDiv.className = `token ${player}`;
+            slot.appendChild(tokenDiv);
+        }
+    });
+
+    // Note: For a complete implementation, you would also position tokens on the board path
+    // This simplified version keeps tokens visible in home slots or moves them conceptually
+}
+
+function showMessage(message) {
+    elements.messageBox.textContent = message;
+}
+
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ===== Start Game =====
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {

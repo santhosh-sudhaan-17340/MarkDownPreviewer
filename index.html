@@ -3,171 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Previewer - Premium Editor</title>
+    <title>Ludo Game</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
-    <!-- Highlight.js for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- html2pdf for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
+    <div class="game-container">
         <header class="header">
-            <div class="header-left">
-                <h1 class="logo">
-                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                    Markdown Previewer
-                </h1>
-            </div>
-            <div class="header-right">
-                <div class="toolbar">
-                    <button id="importBtn" class="btn btn-icon" title="Import file (Ctrl+O)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/>
-                            <line x1="12" y1="3" x2="12" y2="15"/>
-                        </svg>
-                    </button>
-                    <input type="file" id="fileInput" accept=".md,.txt" style="display: none;">
-
-                    <button id="exportMdBtn" class="btn btn-icon" title="Export as Markdown (Ctrl+S)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                    </button>
-
-                    <button id="exportPdfBtn" class="btn btn-icon" title="Export as PDF (Ctrl+P)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                        </svg>
-                    </button>
-
-                    <div class="separator"></div>
-
-                    <button id="undoBtn" class="btn btn-icon" title="Undo (Ctrl+Z)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 7v6h6"/>
-                            <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/>
-                        </svg>
-                    </button>
-
-                    <button id="redoBtn" class="btn btn-icon" title="Redo (Ctrl+Y)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 7v6h-6"/>
-                            <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/>
-                        </svg>
-                    </button>
-
-                    <div class="separator"></div>
-
-                    <button id="themeToggle" class="btn btn-icon" title="Toggle theme (Ctrl+T)">
-                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"/>
-                            <line x1="12" y1="1" x2="12" y2="3"/>
-                            <line x1="12" y1="21" x2="12" y2="23"/>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                            <line x1="1" y1="12" x2="3" y2="12"/>
-                            <line x1="21" y1="12" x2="23" y2="12"/>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
-                        <svg class="moon-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                    </button>
+            <h1>🎲 Ludo Game</h1>
+            <div class="game-info">
+                <div class="current-player">
+                    Current Turn: <span id="currentPlayerName" class="player-badge">Red</span>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="editor-container">
-                <div class="panel-header">
-                    <h2>Editor</h2>
-                    <span class="status-indicator" id="saveStatus">Autosaved</span>
+        <div class="main-content">
+            <div class="game-board">
+                <!-- Red Home Area (Top-Left) -->
+                <div class="home-area red-home">
+                    <div class="home-title">Red</div>
+                    <div class="token-slots">
+                        <div class="token-slot" data-player="red" data-token="0"><div class="token red"></div></div>
+                        <div class="token-slot" data-player="red" data-token="1"><div class="token red"></div></div>
+                        <div class="token-slot" data-player="red" data-token="2"><div class="token red"></div></div>
+                        <div class="token-slot" data-player="red" data-token="3"><div class="token red"></div></div>
+                    </div>
                 </div>
-                <textarea id="editor" class="editor" placeholder="Start typing your Markdown here..."></textarea>
+
+                <!-- Green Home Area (Top-Right) -->
+                <div class="home-area green-home">
+                    <div class="home-title">Green</div>
+                    <div class="token-slots">
+                        <div class="token-slot" data-player="green" data-token="0"><div class="token green"></div></div>
+                        <div class="token-slot" data-player="green" data-token="1"><div class="token green"></div></div>
+                        <div class="token-slot" data-player="green" data-token="2"><div class="token green"></div></div>
+                        <div class="token-slot" data-player="green" data-token="3"><div class="token green"></div></div>
+                    </div>
+                </div>
+
+                <!-- Game Path Board -->
+                <div class="board-path">
+                    <!-- This will contain all 52 path cells + 4 home stretches -->
+                    <div id="gamePath"></div>
+                </div>
+
+                <!-- Yellow Home Area (Bottom-Left) -->
+                <div class="home-area yellow-home">
+                    <div class="home-title">Yellow</div>
+                    <div class="token-slots">
+                        <div class="token-slot" data-player="yellow" data-token="0"><div class="token yellow"></div></div>
+                        <div class="token-slot" data-player="yellow" data-token="1"><div class="token yellow"></div></div>
+                        <div class="token-slot" data-player="yellow" data-token="2"><div class="token yellow"></div></div>
+                        <div class="token-slot" data-player="yellow" data-token="3"><div class="token yellow"></div></div>
+                    </div>
+                </div>
+
+                <!-- Blue Home Area (Bottom-Right) -->
+                <div class="home-area blue-home">
+                    <div class="home-title">Blue</div>
+                    <div class="token-slots">
+                        <div class="token-slot" data-player="blue" data-token="0"><div class="token blue"></div></div>
+                        <div class="token-slot" data-player="blue" data-token="1"><div class="token blue"></div></div>
+                        <div class="token-slot" data-player="blue" data-token="2"><div class="token blue"></div></div>
+                        <div class="token-slot" data-player="blue" data-token="3"><div class="token blue"></div></div>
+                    </div>
+                </div>
+
+                <!-- Center Victory Area -->
+                <div class="center-area">
+                    <div class="victory-triangle red-triangle"></div>
+                    <div class="victory-triangle green-triangle"></div>
+                    <div class="victory-triangle yellow-triangle"></div>
+                    <div class="victory-triangle blue-triangle"></div>
+                    <div class="center-circle">🏆</div>
+                </div>
             </div>
 
-            <div class="resize-handle" id="resizeHandle"></div>
+            <div class="game-controls">
+                <div class="dice-container">
+                    <div id="dice" class="dice">
+                        <div class="dice-face">?</div>
+                    </div>
+                    <button id="rollDiceBtn" class="btn-roll">Roll Dice</button>
+                </div>
 
-            <div class="preview-container">
-                <div class="panel-header">
-                    <h2>Preview</h2>
+                <div class="game-status">
+                    <h3>Game Status</h3>
+                    <div id="messageBox" class="message-box">Welcome to Ludo! Red player starts.</div>
                 </div>
-                <div id="preview" class="preview"></div>
-            </div>
-        </main>
 
-        <!-- Keyboard Shortcuts Modal -->
-        <div id="shortcutsModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Keyboard Shortcuts</h2>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="shortcut-group">
-                        <h3>File Operations</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>O</kbd>
-                            <span>Import file</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>S</kbd>
-                            <span>Export as Markdown</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>P</kbd>
-                            <span>Export as PDF</span>
-                        </div>
+                <div class="player-scores">
+                    <h3>Progress</h3>
+                    <div class="score-item">
+                        <span class="score-label red-bg">Red:</span>
+                        <span id="redScore">0/4 tokens home</span>
                     </div>
-                    <div class="shortcut-group">
-                        <h3>Editor</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>Z</kbd>
-                            <span>Undo</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>Y</kbd>
-                            <span>Redo</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>B</kbd>
-                            <span>Bold</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>I</kbd>
-                            <span>Italic</span>
-                        </div>
+                    <div class="score-item">
+                        <span class="score-label green-bg">Green:</span>
+                        <span id="greenScore">0/4 tokens home</span>
                     </div>
-                    <div class="shortcut-group">
-                        <h3>View</h3>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>T</kbd>
-                            <span>Toggle theme</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <kbd>Ctrl</kbd> + <kbd>/</kbd>
-                            <span>Show shortcuts</span>
-                        </div>
+                    <div class="score-item">
+                        <span class="score-label yellow-bg">Yellow:</span>
+                        <span id="yellowScore">0/4 tokens home</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label blue-bg">Blue:</span>
+                        <span id="blueScore">0/4 tokens home</span>
                     </div>
                 </div>
+
+                <button id="resetBtn" class="btn-reset">New Game</button>
             </div>
         </div>
     </div>
