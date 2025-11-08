@@ -1,0 +1,141 @@
+.attendance-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #2c2c2c;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.attendance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.attendance-header h3 {
+  color: white;
+  margin: 0;
+}
+
+.btn-refresh {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #555;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.attendance-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: #3a3a3a;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #888;
+}
+
+.attendance-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table thead {
+  background: #3a3a3a;
+  position: sticky;
+  top: 0;
+}
+
+.attendance-table th {
+  padding: 12px;
+  text-align: left;
+  color: #ddd;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.attendance-table td {
+  padding: 12px;
+  border-bottom: 1px solid #444;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.attendance-table tbody tr:hover {
+  background: #3a3a3a;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.present {
+  background: rgba(80, 200, 120, 0.2);
+  color: var(--secondary-color);
+}
+
+.status-badge.left {
+  background: rgba(231, 76, 60, 0.2);
+  color: var(--danger-color);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+}
+
+.attendance-panel::-webkit-scrollbar,
+.attendance-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.attendance-panel::-webkit-scrollbar-track,
+.attendance-list::-webkit-scrollbar-track {
+  background: #2c2c2c;
+}
+
+.attendance-panel::-webkit-scrollbar-thumb,
+.attendance-list::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}

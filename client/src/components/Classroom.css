@@ -1,0 +1,137 @@
+.classroom-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1a1a;
+  color: white;
+}
+
+.classroom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: #2c2c2c;
+  border-bottom: 1px solid #444;
+}
+
+.class-info h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.class-id {
+  color: #888;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-hand {
+  padding: 8px 16px;
+  background: transparent;
+  border: 2px solid #888;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s;
+}
+
+.btn-hand:hover {
+  border-color: var(--warning-color);
+}
+
+.btn-hand.active {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+}
+
+.btn-leave {
+  padding: 10px 20px;
+  background: var(--danger-color);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-leave:hover {
+  background: #c0392b;
+}
+
+.classroom-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.video-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.side-panel {
+  width: 350px;
+  background: #2c2c2c;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #444;
+}
+
+.panel-tabs {
+  display: flex;
+  background: #222;
+  border-bottom: 1px solid #444;
+}
+
+.panel-tabs button {
+  flex: 1;
+  padding: 15px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+}
+
+.panel-tabs button:hover {
+  background: #2c2c2c;
+  color: white;
+}
+
+.panel-tabs button.active {
+  color: white;
+  border-bottom-color: var(--primary-color);
+}
+
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .classroom-main {
+    flex-direction: column;
+  }
+
+  .side-panel {
+    width: 100%;
+    height: 300px;
+  }
+
+  .panel-tabs button {
+    font-size: 12px;
+    padding: 12px 8px;
+  }
+}
