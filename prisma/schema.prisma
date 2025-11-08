@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Resource types enum
+enum ResourceType {
+  DOCTOR
+  BARBER
+  TECHNICIAN
+  CONSULTANT
+  OTHER
+}
+
+// Appointment status enum
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+// Reminder status enum
+enum ReminderStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+// Resources (doctors, barbers, technicians, etc.)
+model Resource {
+  id          String       @id @default(uuid())
+  name        String
+  type        ResourceType
+  email       String?
+  phone       String?
+  description String?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  schedules    Schedule[]
+  appointments Appointment[]
+
+  @@index([type])
+  @@index([isActive])
+}
+
+// Weekly schedules for resources (e.g., Monday 9am-5pm)
+model Schedule {
+  id         String   @id @default(uuid())
+  resourceId String
+  dayOfWeek  Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime  String // Format: "HH:MM" (e.g., "09:00")
+  endTime    String // Format: "HH:MM" (e.g., "17:00")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([resourceId])
+  @@index([dayOfWeek])
+  @@index([isActive])
+}
+
+// Customer/Client information
+model Customer {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  phone        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // No-show tracking
+  noShowCount  Int      @default(0)
+  totalPenalty Decimal  @default(0) @db.Decimal(10, 2)
+
+  // Relations
+  appointments Appointment[]
+  penalties    NoShowPenalty[]
+
+  @@index([email])
+}
+
+// Appointments
+model Appointment {
+  id         String            @id @default(uuid())
+  resourceId String
+  customerId String
+  startTime  DateTime
+  endTime    DateTime
+  status     AppointmentStatus @default(PENDING)
+  notes      String?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  // Relations
+  resource  Resource        @relation(fields: [resourceId], references: [id])
+  customer  Customer        @relation(fields: [customerId], references: [id])
+  reminders Reminder[]
+  penalty   NoShowPenalty?
+
+  @@index([resourceId, startTime])
+  @@index([customerId])
+  @@index([status])
+  @@index([startTime])
+}
+
+// Reminders for appointments
+model Reminder {
+  id            String         @id @default(uuid())
+  appointmentId String
+  scheduledFor  DateTime // When to send the reminder
+  status        ReminderStatus @default(PENDING)
+  message       String?
+  sentAt        DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  @@index([appointmentId])
+  @@index([scheduledFor, status])
+}
+
+// No-show penalties
+model NoShowPenalty {
+  id            String   @id @default(uuid())
+  appointmentId String   @unique
+  customerId    String
+  amount        Decimal  @db.Decimal(10, 2)
+  isPaid        Boolean  @default(false)
+  paidAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  customer    Customer    @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([isPaid])
+}
+
+// Cancellation rules
+model CancellationRule {
+  id                  String   @id @default(uuid())
+  name                String
+  hoursBeforeStart    Int // Minimum hours before appointment start for free cancellation
+  penaltyPercentage   Decimal  @db.Decimal(5, 2) // Penalty if cancelled within the window
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([isActive])
+}
