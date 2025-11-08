@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Operations - MLCP System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-brand">🅿️ MLCP System</div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="parking.html" class="active">Parking</a></li>
+                <li><a href="reservation.html">Reservations</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h1>Parking Operations</h1>
+
+            <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                <!-- Check-In Form -->
+                <div class="card">
+                    <h2>🚗 Vehicle Check-In</h2>
+                    <form id="checkInForm">
+                        <div class="form-group">
+                            <label>Vehicle Number</label>
+                            <input type="text" id="checkInVehicleNumber" placeholder="ABC-1234" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Type</label>
+                            <select id="checkInVehicleType" required>
+                                <option value="TWO_WHEELER">Two-Wheeler</option>
+                                <option value="CAR">Car</option>
+                                <option value="TRUCK">Truck</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Gate</label>
+                            <select id="checkInGateId" required>
+                                <option value="1">Gate A - Ground Floor</option>
+                                <option value="2">Gate B - Ground Floor</option>
+                                <option value="3">Gate C - First Floor</option>
+                                <option value="4">Gate D - Second Floor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="checkInEV">
+                                <label for="checkInEV">Requires EV Charging</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="checkInVIP">
+                                <label for="checkInVIP">VIP Parking</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reservation Number (Optional)</label>
+                            <input type="text" id="checkInReservation" placeholder="RSV-20240101-000001">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Check-In Vehicle</button>
+                    </form>
+                </div>
+
+                <!-- Check-Out Form -->
+                <div class="card">
+                    <h2>🚪 Vehicle Check-Out</h2>
+                    <form id="checkOutForm">
+                        <div class="form-group">
+                            <label>Ticket Number</label>
+                            <input type="text" id="checkOutTicketNumber" placeholder="TKT-20240101-000001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select id="checkOutPaymentMethod" required>
+                                <option value="CASH">Cash</option>
+                                <option value="CARD">Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="WALLET">Wallet</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Check-Out & Pay</button>
+                    </form>
+
+                    <div id="checkOutResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Ticket Display -->
+            <div class="card" id="ticketDisplay" style="display: none;">
+                <h2>Parking Ticket</h2>
+                <div id="ticketContent"></div>
+            </div>
+
+            <!-- Active Tickets -->
+            <div class="card">
+                <h2>Active Tickets</h2>
+                <table id="activeTicketsTable">
+                    <thead>
+                        <tr>
+                            <th>Ticket Number</th>
+                            <th>Vehicle Number</th>
+                            <th>Vehicle Type</th>
+                            <th>Slot Number</th>
+                            <th>Entry Time</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activeTicketsBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center;">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="parking.js"></script>
+</body>
+</html>

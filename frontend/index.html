@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLCP System - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-brand">🅿️ MLCP System</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Dashboard</a></li>
+                <li><a href="parking.html">Parking</a></li>
+                <li><a href="reservation.html">Reservations</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h1>Parking Dashboard</h1>
+
+            <!-- Real-time Status Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-content">
+                        <h3 id="totalSlots">--</h3>
+                        <p>Total Slots</p>
+                    </div>
+                </div>
+                <div class="stat-card available">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3 id="availableSlots">--</h3>
+                        <p>Available</p>
+                    </div>
+                </div>
+                <div class="stat-card occupied">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-content">
+                        <h3 id="occupiedSlots">--</h3>
+                        <p>Occupied</p>
+                    </div>
+                </div>
+                <div class="stat-card reserved">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <h3 id="reservedSlots">--</h3>
+                        <p>Reserved</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Chart -->
+            <div class="card">
+                <h2>Occupancy Rate</h2>
+                <div class="occupancy-bar">
+                    <div id="occupancyFill" class="occupancy-fill" style="width: 0%"></div>
+                    <span id="occupancyPercent" class="occupancy-text">0%</span>
+                </div>
+            </div>
+
+            <!-- Floor-wise Occupancy -->
+            <div class="card">
+                <h2>Floor-wise Occupancy</h2>
+                <div id="floorOccupancy" class="floor-grid"></div>
+            </div>
+
+            <!-- Vehicle Type Distribution -->
+            <div class="card">
+                <h2>Vehicle Type Distribution</h2>
+                <div id="vehicleDistribution" class="vehicle-dist-grid"></div>
+            </div>
+
+            <!-- Revenue Stats -->
+            <div class="stats-grid">
+                <div class="stat-card revenue">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3 id="todayRevenue">$0</h3>
+                        <p>Today's Revenue</p>
+                    </div>
+                </div>
+                <div class="stat-card revenue">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <h3 id="monthRevenue">$0</h3>
+                        <p>Month's Revenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot offline"></span>
+                <span>Connecting to server...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

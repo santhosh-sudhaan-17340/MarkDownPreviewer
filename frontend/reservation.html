@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations - MLCP System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-brand">🅿️ MLCP System</div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="parking.html">Parking</a></li>
+                <li><a href="reservation.html" class="active">Reservations</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h1>Online Reservations</h1>
+
+            <div class="card">
+                <h2>📅 Create New Reservation</h2>
+                <form id="reservationForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>Vehicle Number</label>
+                            <input type="text" id="resVehicleNumber" placeholder="ABC-1234" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Type</label>
+                            <select id="resVehicleType" required>
+                                <option value="TWO_WHEELER">Two-Wheeler</option>
+                                <option value="CAR">Car</option>
+                                <option value="TRUCK">Truck</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="resEmail" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="resPhone" placeholder="+1234567890" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reserved From</label>
+                            <input type="datetime-local" id="resFrom" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reserved Until</label>
+                            <input type="datetime-local" id="resUntil" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="resEV">
+                            <label for="resEV">Requires EV Charging</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="resVIP">
+                            <label for="resVIP">VIP Parking</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Create Reservation</button>
+                </form>
+            </div>
+
+            <div class="card" id="reservationResult" style="display: none;">
+                <h2>Reservation Confirmation</h2>
+                <div id="reservationContent"></div>
+            </div>
+
+            <div class="card">
+                <h2>Check Reservation Status</h2>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="checkResNumber" placeholder="Enter reservation number" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
+                    <button onclick="checkReservation()" class="btn btn-primary">Check Status</button>
+                </div>
+                <div id="resStatusResult" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+
+        document.getElementById('reservationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const reservationData = {
+                vehicleNumber: document.getElementById('resVehicleNumber').value,
+                vehicleType: document.getElementById('resVehicleType').value,
+                userEmail: document.getElementById('resEmail').value,
+                userPhone: document.getElementById('resPhone').value,
+                reservedFrom: document.getElementById('resFrom').value,
+                reservedUntil: document.getElementById('resUntil').value,
+                requiresEvCharging: document.getElementById('resEV').checked,
+                isVip: document.getElementById('resVIP').checked
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reservationData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showReservationResult(result);
+                    document.getElementById('reservationForm').reset();
+                } else {
+                    const error = await response.json();
+                    alert('Reservation failed: ' + (error.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Reservation error:', error);
+                alert('Network error occurred');
+            }
+        });
+
+        function showReservationResult(reservation) {
+            const resultDiv = document.getElementById('reservationResult');
+            const contentDiv = document.getElementById('reservationContent');
+
+            contentDiv.innerHTML = `
+                <div style="background: #d4edda; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #155724; margin-bottom: 15px;">✅ ${reservation.message}</h3>
+                    <div style="display: grid; gap: 10px; color: #155724;">
+                        <p><strong>Reservation Number:</strong> ${reservation.reservationNumber}</p>
+                        <p><strong>Vehicle Number:</strong> ${reservation.vehicleNumber}</p>
+                        <p><strong>Slot Number:</strong> ${reservation.slotNumber}</p>
+                        <p><strong>Floor:</strong> ${reservation.floorNumber}</p>
+                        <p><strong>Reserved From:</strong> ${new Date(reservation.reservedFrom).toLocaleString()}</p>
+                        <p><strong>Reserved Until:</strong> ${new Date(reservation.reservedUntil).toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function checkReservation() {
+            const resNumber = document.getElementById('checkResNumber').value;
+            if (!resNumber) {
+                alert('Please enter a reservation number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations/${resNumber}`);
+                if (response.ok) {
+                    const reservation = await response.json();
+                    document.getElementById('resStatusResult').innerHTML = `
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                            <p><strong>Status:</strong> ${reservation.status}</p>
+                            <p><strong>Vehicle:</strong> ${reservation.vehicleNumber}</p>
+                            <p><strong>Time:</strong> ${new Date(reservation.reservedFrom).toLocaleString()} - ${new Date(reservation.reservedUntil).toLocaleString()}</p>
+                        </div>
+                    `;
+                } else {
+                    alert('Reservation not found');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error occurred');
+            }
+        }
+    </script>
+</body>
+</html>
