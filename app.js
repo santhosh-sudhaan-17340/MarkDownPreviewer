@@ -7,6 +7,7 @@ const APP_STATE = {
     currentContent: '',
     autosaveTimeout: null,
     isResizing: false,
+    isScrollingFromEditor: false,
     startX: 0,
     startWidth: 0
 };
@@ -24,7 +25,6 @@ const elements = {
     exportPdfBtn: document.getElementById('exportPdfBtn'),
     undoBtn: document.getElementById('undoBtn'),
     redoBtn: document.getElementById('redoBtn'),
-    syncScrollBtn: document.getElementById('syncScrollBtn'),
     saveStatus: document.getElementById('saveStatus'),
     shortcutsModal: document.getElementById('shortcutsModal'),
     resizeHandle: document.getElementById('resizeHandle'),
@@ -106,6 +106,9 @@ function toggleTheme() {
 function updatePreview() {
     const markdown = elements.editor.value;
     try {
+        // Save current scroll position
+        const currentScrollTop = elements.preview.scrollTop;
+
         const html = marked.parse(markdown);
         elements.preview.innerHTML = html;
 
@@ -118,6 +121,11 @@ function updatePreview() {
         elements.preview.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
             checkbox.disabled = true; // Make checkboxes read-only in preview
         });
+
+        // Restore scroll position (only if not syncing from editor)
+        if (!APP_STATE.isScrollingFromEditor) {
+            elements.preview.scrollTop = currentScrollTop;
+        }
     } catch (error) {
         console.error('Markdown parsing error:', error);
         elements.preview.innerHTML = `<p style="color: red;">Error parsing Markdown: ${error.message}</p>`;
@@ -130,7 +138,7 @@ function debouncedUpdatePreview() {
     clearTimeout(updateTimeout);
     updateTimeout = setTimeout(() => {
         updatePreview();
-    }, 100);
+    }, 50);
 }
 
 // ===== Undo/Redo System =====
@@ -232,84 +240,17 @@ function loadContent() {
         // Load default example content
         const defaultContent = `# Welcome to Markdown Previewer
 
-This is a **premium** Markdown editor with live preview!
+Start typing your **Markdown** here and see the *live preview* instantly!
 
-## Features
-
-- 🎨 **Dual themes** - Light and dark mode
-- 💾 **Autosave** - Your work is saved automatically
-- 📤 **Export** - Save as Markdown or PDF
-- ⌨️ **Keyboard shortcuts** - Press \`Ctrl+/\` to see all shortcuts
-- 🔄 **Undo/Redo** - Full history support
-- 📱 **Responsive** - Works on all devices
-
-## Markdown Examples
-
-### Text Formatting
-
-You can use **bold**, *italic*, ~~strikethrough~~, and \`inline code\`.
-
-### Code Blocks
+## Quick Examples
 
 \`\`\`javascript
-function greet(name) {
-    console.log(\`Hello, \${name}!\`);
-}
-
-greet('World');
+console.log("Hello, World!");
 \`\`\`
 
-### Lists
-
-#### Unordered List
-- First item
-- Second item
-  - Nested item
-  - Another nested item
-- Third item
-
-#### Ordered List
-1. First step
-2. Second step
-3. Third step
-
-#### Task List
-- [x] Completed task
-- [ ] Incomplete task
-- [ ] Another task
-
-### Tables
-
-| Feature | Supported | Notes |
-|---------|-----------|-------|
-| Tables | ✅ | Full GFM support |
-| Syntax Highlighting | ✅ | Multiple languages |
-| LaTeX | ❌ | Coming soon |
-
-### Quotes
-
-> "The best way to predict the future is to invent it."
->
-> — Alan Kay
-
-### Links and Images
-
-[Visit GitHub](https://github.com)
-
-![Placeholder Image](https://via.placeholder.com/600x300?text=Markdown+Previewer)
-
-### Horizontal Rule
-
----
-
-## Getting Started
-
-1. Start typing in the editor on the left
-2. See the preview update in real-time
-3. Use keyboard shortcuts for quick actions
-4. Export your work when done
-
-**Tip:** Try pressing \`Ctrl+T\` to toggle the theme!
+- Use **Ctrl+T** to toggle theme
+- Use **Ctrl+S** to export as .md
+- Use **Ctrl+/** to see all shortcuts
 `;
         elements.editor.value = defaultContent;
         APP_STATE.currentContent = defaultContent;
@@ -413,19 +354,17 @@ function syncScroll(source) {
     const sourceScrollPercent = source.scrollTop / (source.scrollHeight - source.clientHeight);
     const targetScrollTop = sourceScrollPercent * (target.scrollHeight - target.clientHeight);
 
-    target.scrollTop = targetScrollTop;
-}
-
-function toggleSyncScroll() {
-    APP_STATE.syncScroll = !APP_STATE.syncScroll;
-
-    if (APP_STATE.syncScroll) {
-        elements.syncScrollBtn.style.backgroundColor = 'var(--accent-color)';
-        elements.syncScrollBtn.style.color = 'white';
-    } else {
-        elements.syncScrollBtn.style.backgroundColor = '';
-        elements.syncScrollBtn.style.color = '';
+    // Set flag to prevent preview from restoring its scroll position
+    if (source === elements.editor) {
+        APP_STATE.isScrollingFromEditor = true;
     }
+
+    target.scrollTop = targetScrollTop;
+
+    // Reset flag after scroll is applied
+    setTimeout(() => {
+        APP_STATE.isScrollingFromEditor = false;
+    }, 100);
 }
 
 // ===== Panel Resizing =====
@@ -578,7 +517,6 @@ function initEventListeners() {
     elements.exportPdfBtn.addEventListener('click', exportPDF);
     elements.undoBtn.addEventListener('click', undo);
     elements.redoBtn.addEventListener('click', redo);
-    elements.syncScrollBtn.addEventListener('click', toggleSyncScroll);
 
     // Resize handle
     elements.resizeHandle.addEventListener('mousedown', initResize);
