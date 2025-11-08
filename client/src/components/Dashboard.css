@@ -1,0 +1,68 @@
+.dashboard {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 24px;
+}
+
+.stat-icon {
+  margin-bottom: 12px;
+}
+
+.no-data {
+  text-align: center;
+  color: #718096;
+  padding: 40px 20px;
+}
+
+.budget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.budget-item {
+  padding: 16px;
+  background: #f7fafc;
+  border-radius: 8px;
+  position: relative;
+}
+
+.budget-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.budget-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.budget-amount {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.budget-percentage {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-weight: 600;
+  color: #667eea;
+}

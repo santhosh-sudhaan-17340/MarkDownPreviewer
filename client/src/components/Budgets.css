@@ -1,0 +1,159 @@
+.budgets {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.budgets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.budget-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.budget-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.budget-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.budget-category {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-icon {
+  font-size: 1.5rem;
+}
+
+.category-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.delete-btn-small {
+  background: transparent;
+  border: none;
+  color: #cbd5e0;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.delete-btn-small:hover {
+  background: #fed7d7;
+  color: #f56565;
+}
+
+.budget-amounts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.amount-spent,
+.amount-total {
+  display: flex;
+  flex-direction: column;
+}
+
+.amount-label {
+  font-size: 0.875rem;
+  color: #718096;
+  margin-bottom: 4px;
+}
+
+.amount-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.budget-progress {
+  margin-bottom: 16px;
+}
+
+.progress-text {
+  display: block;
+  text-align: right;
+  font-weight: 600;
+  margin-top: 8px;
+  color: #4a5568;
+}
+
+.progress-good {
+  background: linear-gradient(90deg, #48bb78, #38a169);
+}
+
+.progress-warning {
+  background: linear-gradient(90deg, #ed8936, #dd6b20);
+}
+
+.progress-exceeded {
+  background: linear-gradient(90deg, #f56565, #e53e3e);
+}
+
+.budget-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.budget-good .budget-status {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.budget-warning .budget-status {
+  background: #feebc8;
+  color: #7c2d12;
+}
+
+.budget-exceeded .budget-status {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.budget-period {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+.no-budgets {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.no-budgets p:first-child {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .budgets-grid {
+    grid-template-columns: 1fr;
+  }
+}
