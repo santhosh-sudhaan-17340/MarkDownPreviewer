@@ -1,0 +1,17 @@
+package com.sourastra.matrimony.dto;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class InterestRequest {
+
+    @NotNull(message = "From profile ID is required")
+    private Long fromProfileId;
+
+    private String message;
+}

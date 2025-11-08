@@ -1,269 +1,592 @@
-# 📝 Markdown Previewer
+# Sourastra Matrimony
 
-A premium, full-featured Markdown editor with real-time preview, built with vanilla JavaScript. Experience fluid, interactive Markdown editing with a beautiful UI and powerful features.
+A modern matrimony platform designed specifically for the Sourastra community to help members find compatible life partners. Built with Spring Boot and following industry-standard three-tier architecture patterns.
 
-![Markdown Previewer](https://img.shields.io/badge/markdown-editor-blue.svg)
+![Java](https://img.shields.io/badge/Java-17-orange.svg)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## ✨ Features
+## What is this application?
 
-### Core Functionality
-- **Live Preview** - See your Markdown rendered in real-time as you type
-- **GitHub-Flavored Markdown** - Full GFM support including tables, task lists, and strikethrough
-- **Syntax Highlighting** - Beautiful code blocks with automatic language detection
-- **Synchronized Scrolling** - Editor and preview scroll together seamlessly
+This is a matrimony platform designed specifically for the Sourastra community to help members find compatible life partners. The application allows users to:
 
-### Editor Features
-- **Undo/Redo** - Full history support with 50-level undo stack
-- **Autosave** - Your work is automatically saved to local storage
-- **File Import** - Load .md and .txt files directly
-- **Export Options** - Save as Markdown (.md) or PDF
+- Create and manage their matrimonial profiles
+- Browse other profiles with advanced filtering and sorting
+- Express interest in compatible profiles
+- Manage their received interests
+- Search profiles by name, city, gender, and date of birth
 
-### UI/UX
-- **Dual Themes** - Switch between light and dark mode
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- **Premium Animations** - Smooth transitions and delightful micro-interactions
-- **Resizable Panels** - Adjust editor and preview widths to your preference
-- **Keyboard Shortcuts** - Speed up your workflow with powerful shortcuts
+## Technical Overview
 
-### Performance
-- **Debounced Rendering** - Optimized for large files without lag
-- **Local Storage** - Instant load times with persistent content
-- **Efficient Updates** - Smart re-rendering only when needed
+Built using Spring Boot 3.2.0 with Java 17, this application provides RESTful APIs for profile management and uses PostgreSQL as the database. The application follows a clean three-tier architecture pattern for maintainable and scalable code.
 
-## 🚀 Getting Started
+## Architecture
 
-### Quick Start
+The application is structured using a three-tier architecture:
 
-1. **Clone or download** this repository
-2. **Open `index.html`** in your web browser
-3. **Start typing** Markdown in the editor
-4. **See the magic** happen in real-time!
+- **Controller Layer**: Handles incoming HTTP requests, validates them, and passes them to the service layer. It's responsible for the API endpoints.
+- **Service Layer**: Contains the business logic of the application. It processes data from the controller and interacts with the repository layer.
+- **Repository Layer**: Responsible for data access. It interacts with the database using Spring Data JPA.
 
-No build process, no dependencies to install - just open and use!
+This separation of concerns makes the application modular, easier to maintain, and scalable.
 
-### Browser Compatibility
-
-Works in all modern browsers:
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Opera 76+
-
-## ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+O` | Import file |
-| `Ctrl+S` | Export as Markdown |
-| `Ctrl+P` | Export as PDF |
-| `Ctrl+Z` | Undo |
-| `Ctrl+Y` | Redo |
-| `Ctrl+B` | Bold text |
-| `Ctrl+I` | Italic text |
-| `Ctrl+T` | Toggle theme |
-| `Ctrl+/` | Show keyboard shortcuts |
-
-*Note: Use `Cmd` instead of `Ctrl` on macOS*
-
-## 📚 Markdown Support
-
-### Text Formatting
-- **Bold**: `**text**` or `__text__`
-- *Italic*: `*text*` or `_text_`
-- ~~Strikethrough~~: `~~text~~`
-- `Inline code`: `` `code` ``
-
-### Headings
-```markdown
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
+```
+src/main/java/com/sourastra/matrimony/
+├── SoustraMatrimonyApplication.java    # Main application class
+├── controller/
+│   ├── ProfileController.java          # REST endpoints
+│   └── GlobalExceptionHandler.java     # Global error handling
+├── service/
+│   ├── ProfileService.java             # Profile business logic
+│   └── InterestService.java            # Interest business logic
+├── repository/
+│   ├── ProfileRepository.java          # Profile data access
+│   ├── InterestRepository.java         # Interest data access
+│   └── ProfileSpecification.java       # JPA Specifications for filtering
+├── entity/
+│   ├── Profile.java                    # Profile entity
+│   └── Interest.java                   # Interest entity
+└── dto/
+    ├── InterestRequest.java            # Interest request DTO
+    └── InterestResponse.java           # Interest response DTO
 ```
 
-### Lists
+## Features
 
-**Unordered:**
-```markdown
-- Item 1
-- Item 2
-  - Nested item
+- **Profile Management**: Create, read, update, and delete user profiles
+- **Advanced Filtering**: Filter profiles by name, city, gender, and date of birth range
+- **Flexible Sorting**: Sort results by name, city, gender, or date of birth
+- **Interest System**: Express interest in other profiles with optional messages
+- **Validation**: Comprehensive input validation using Jakarta Bean Validation
+- **Error Handling**: Global exception handling with meaningful error messages
+- **Database**: PostgreSQL with JPA/Hibernate ORM
+- **RESTful API**: Clean REST API design following best practices
+
+## Prerequisites
+
+Before you can run this application, you need to have the following installed:
+
+- **Java 17 or later**: Download from [Oracle](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html) or use OpenJDK
+- **Maven**: Build automation tool. Download from [Maven website](https://maven.apache.org/download.cgi)
+- **PostgreSQL**: Open-source object-relational database system. Download from [PostgreSQL website](https://www.postgresql.org/download/)
+
+## Database Setup
+
+### 1. Install PostgreSQL
+
+Follow the instructions on the PostgreSQL website to install it on your system.
+
+### 2. Create the database
+
+Open the PostgreSQL command-line tool (`psql`) and create a new database:
+
+```sql
+CREATE DATABASE sourastra_matrimony_db;
 ```
 
-**Ordered:**
-```markdown
-1. First
-2. Second
-3. Third
+Alternatively, you can use pgAdmin or any PostgreSQL GUI tool.
+
+### 3. Configure the connection
+
+Open the `src/main/resources/application.properties` file and update the database connection settings:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/sourastra_matrimony_db
+spring.datasource.username=postgres
+spring.datasource.password=your_password_here
 ```
 
-**Task Lists:**
-```markdown
-- [x] Completed task
-- [ ] Incomplete task
+Replace `your_password_here` with your PostgreSQL password.
+
+## How to Run the Application
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/santhosh-sudhaan-17340/MarkDownPreviewer.git
+cd MarkDownPreviewer
 ```
 
-### Code Blocks
+### 2. Build the project
 
-````markdown
-```javascript
-function hello() {
-    console.log("Hello, World!");
+```bash
+mvn clean install
+```
+
+This will download all dependencies and compile the project.
+
+### 3. Run the application
+
+```bash
+mvn spring-boot:run
+```
+
+The application will start on `http://localhost:8080`.
+
+You should see output similar to:
+
+```
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.0)
+
+...
+Started SoustraMatrimonyApplication in X.XXX seconds
+```
+
+## API Endpoints
+
+### Get All Profiles
+
+Retrieves a list of all profiles with optional filtering and sorting.
+
+- **URL**: `/api/profiles`
+- **Method**: `GET`
+- **Query Parameters**:
+  - `name` (optional): Partial, case-insensitive match on profile name
+  - `city` (optional): Case-insensitive exact match on city
+  - `gender` (optional): Case-insensitive exact match on gender (Male, Female, Other)
+  - `dobFrom` (optional): Inclusive ISO-8601 date filter (e.g., `1990-01-01`)
+  - `dobTo` (optional): Inclusive ISO-8601 date filter (e.g., `2000-12-31`)
+  - `sortBy` (optional): One of `name`, `city`, `gender`, or `dateOfBirth` (defaults to `name`)
+  - `sortDirection` (optional): `ASC` or `DESC` (defaults to `ASC`)
+
+**Example Request**:
+```bash
+GET http://localhost:8080/api/profiles?city=Madurai&gender=Male&sortBy=name&sortDirection=ASC
+```
+
+**Example Response**:
+```json
+[
+    {
+        "id": 1,
+        "name": "Santhosh Kumar",
+        "email": "santhosh@example.com",
+        "phone": "1234567890",
+        "gender": "Male",
+        "dateOfBirth": "1990-01-15",
+        "city": "Madurai"
+    },
+    {
+        "id": 2,
+        "name": "Priya Krishnan",
+        "email": "priya@example.com",
+        "phone": "0987654321",
+        "gender": "Female",
+        "dateOfBirth": "1992-05-20",
+        "city": "Dindigul"
+    }
+]
+```
+
+### Get Profile by ID
+
+Retrieves a single profile by their ID.
+
+- **URL**: `/api/profiles/{id}`
+- **Method**: `GET`
+- **URL Parameters**: `id` - Profile ID (Long)
+
+**Example Request**:
+```bash
+GET http://localhost:8080/api/profiles/1
+```
+
+**Example Response**:
+```json
+{
+    "id": 1,
+    "name": "Santhosh Kumar",
+    "email": "santhosh@example.com",
+    "phone": "1234567890",
+    "gender": "Male",
+    "dateOfBirth": "1990-01-15",
+    "city": "Madurai"
 }
 ```
-````
 
-### Tables
+### Create a New Profile
 
-```markdown
-| Header 1 | Header 2 |
-|----------|----------|
-| Cell 1   | Cell 2   |
+Creates a new profile.
+
+- **URL**: `/api/profiles`
+- **Method**: `POST`
+- **Request Body**: JSON object with profile details
+
+**Example Request**:
+```bash
+POST http://localhost:8080/api/profiles
+Content-Type: application/json
+
+{
+    "name": "New Profile",
+    "email": "newprofile@example.com",
+    "phone": "5555555555",
+    "gender": "Male",
+    "dateOfBirth": "1995-03-10",
+    "city": "Chennai"
+}
 ```
 
-### Links & Images
+**Validation Rules**:
+- `name`: Required, 2-100 characters
+- `email`: Required, valid email format, unique
+- `phone`: Required, exactly 10 digits
+- `gender`: Required, must be Male, Female, or Other
+- `dateOfBirth`: Required, must be in the past
+- `city`: Required, 2-100 characters
 
-```markdown
-[Link text](https://example.com)
-![Alt text](image-url.jpg)
+**Example Response**:
+```json
+{
+    "id": 4,
+    "name": "New Profile",
+    "email": "newprofile@example.com",
+    "phone": "5555555555",
+    "gender": "Male",
+    "dateOfBirth": "1995-03-10",
+    "city": "Chennai"
+}
 ```
 
-### Blockquotes
+### Update an Existing Profile
 
-```markdown
-> This is a quote
->
-> — Author
+Updates an existing profile's information.
+
+- **URL**: `/api/profiles/{id}`
+- **Method**: `PUT`
+- **URL Parameters**: `id` - Profile ID (Long)
+- **Request Body**: JSON object with updated profile details
+
+**Example Request**:
+```bash
+PUT http://localhost:8080/api/profiles/1
+Content-Type: application/json
+
+{
+    "name": "Santhosh Kumar Updated",
+    "email": "santhosh.updated@example.com",
+    "phone": "1234567899",
+    "gender": "Male",
+    "dateOfBirth": "1990-01-15",
+    "city": "Madurai"
+}
 ```
 
-### Horizontal Rules
-
-```markdown
----
+**Example Response**:
+```json
+{
+    "id": 1,
+    "name": "Santhosh Kumar Updated",
+    "email": "santhosh.updated@example.com",
+    "phone": "1234567899",
+    "gender": "Male",
+    "dateOfBirth": "1990-01-15",
+    "city": "Madurai"
+}
 ```
 
-## 🎨 Themes
+### Delete a Profile
 
-The app includes two beautiful themes:
+Deletes a profile by their ID.
 
-- **Light Theme** - Clean and professional
-- **Dark Theme** - Easy on the eyes for extended sessions
+- **URL**: `/api/profiles/{id}`
+- **Method**: `DELETE`
+- **URL Parameters**: `id` - Profile ID (Long)
 
-Switch between themes using the theme toggle button or press `Ctrl+T`.
+**Example Request**:
+```bash
+DELETE http://localhost:8080/api/profiles/1
+```
 
-## 💾 Data Persistence
+**Response**: `204 No Content` (successful deletion)
 
-All your content is automatically saved to your browser's local storage:
+### Express Interest in a Profile
 
-- **Autosave** - Triggered 1 second after you stop typing
-- **Persistent** - Content survives browser restarts
-- **Privacy** - Everything stays on your device
+Records that one profile has shown interest in another profile.
 
-## 📱 Responsive Design
+- **URL**: `/api/profiles/{id}/interests`
+- **Method**: `POST`
+- **URL Parameters**: `id` - Target profile ID (Long)
+- **Request Body**: JSON object with interest details
 
-The app adapts to your screen size:
+**Example Request**:
+```bash
+POST http://localhost:8080/api/profiles/2/interests
+Content-Type: application/json
 
-- **Desktop** - Side-by-side editor and preview with resizable panels
-- **Tablet** - Optimized layout with touch-friendly controls
-- **Mobile** - Stacked layout with easy switching between editor and preview
+{
+    "fromProfileId": 1,
+    "message": "Hi Priya, I would love to connect and learn more about you."
+}
+```
 
-## 🏗️ Architecture
+**Business Rules**:
+- Both profiles must exist
+- Cannot express interest in your own profile
+- Cannot express interest if already expressed before
 
-Built with a modular, component-based approach:
+**Example Response**:
+```json
+{
+    "id": 1,
+    "fromProfileId": 1,
+    "toProfileId": 2,
+    "message": "Hi Priya, I would love to connect and learn more about you.",
+    "createdAt": "2024-05-05T10:30:45.123"
+}
+```
+
+## Error Handling
+
+The API provides detailed error messages for various scenarios:
+
+### Validation Errors
+
+```json
+{
+    "status": 400,
+    "error": "Validation Failed",
+    "validationErrors": {
+        "email": "Email should be valid",
+        "phone": "Phone number must be 10 digits"
+    }
+}
+```
+
+### Business Logic Errors
+
+```json
+{
+    "status": 400,
+    "error": "Email already exists: test@example.com"
+}
+```
+
+### Not Found Errors
+
+```json
+{
+    "status": 400,
+    "error": "Profile not found with id: 999"
+}
+```
+
+## Testing with cURL
+
+Here are some example cURL commands to test the API:
+
+### Create a Profile
+```bash
+curl -X POST http://localhost:8080/api/profiles \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "phone": "9876543210",
+    "gender": "Male",
+    "dateOfBirth": "1995-06-15",
+    "city": "Madurai"
+  }'
+```
+
+### Get All Profiles
+```bash
+curl http://localhost:8080/api/profiles
+```
+
+### Get Profile by ID
+```bash
+curl http://localhost:8080/api/profiles/1
+```
+
+### Update Profile
+```bash
+curl -X PUT http://localhost:8080/api/profiles/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Name",
+    "email": "updated@example.com",
+    "phone": "9876543211",
+    "gender": "Male",
+    "dateOfBirth": "1995-06-15",
+    "city": "Chennai"
+  }'
+```
+
+### Delete Profile
+```bash
+curl -X DELETE http://localhost:8080/api/profiles/1
+```
+
+### Express Interest
+```bash
+curl -X POST http://localhost:8080/api/profiles/2/interests \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fromProfileId": 1,
+    "message": "Hello, I would like to connect with you."
+  }'
+```
+
+## Configuration
+
+Key configuration properties in `application.properties`:
+
+```properties
+# Server Configuration
+server.port=8080
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/sourastra_matrimony_db
+spring.datasource.username=postgres
+spring.datasource.password=password
+
+# JPA/Hibernate Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Logging Configuration
+logging.level.org.springframework.web=INFO
+logging.level.com.sourastra.matrimony=DEBUG
+```
+
+### Important Configuration Options
+
+- `spring.jpa.hibernate.ddl-auto=update`: Automatically updates the database schema based on entity changes. Use `validate` in production.
+- `spring.jpa.show-sql=true`: Shows SQL queries in console logs (useful for debugging)
+- `server.port`: Change the application port if needed
+
+## Technologies Used
+
+- **Spring Boot 3.2.0**: Application framework
+- **Spring Data JPA**: Data access and ORM
+- **Spring Web**: RESTful web services
+- **Spring Validation**: Bean validation
+- **PostgreSQL**: Relational database
+- **Hibernate**: JPA implementation
+- **Lombok**: Reduce boilerplate code
+- **Maven**: Build and dependency management
+
+## Development
+
+### Project Structure
+
+The project follows standard Maven directory structure:
 
 ```
 MarkDownPreviewer/
-├── index.html          # Main HTML structure
-├── styles.css          # Complete styling with CSS variables
-├── app.js              # Application logic and state management
-└── README.md           # Documentation
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/sourastra/matrimony/
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+├── pom.xml
+└── README.md
 ```
 
-### Key Components
+### Building for Production
 
-1. **State Management** - Centralized app state
-2. **Event System** - Clean event delegation
-3. **Storage Layer** - LocalStorage abstraction
-4. **Render Engine** - Optimized Markdown parsing
-5. **Theme System** - CSS variables for easy theming
+1. Update `application.properties` for production settings:
+   ```properties
+   spring.jpa.hibernate.ddl-auto=validate
+   spring.jpa.show-sql=false
+   ```
 
-## 🔧 Technologies Used
+2. Build the JAR file:
+   ```bash
+   mvn clean package -DskipTests
+   ```
 
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS Grid and Flexbox
-- **Vanilla JavaScript** - No framework dependencies
-- **Marked.js** - Markdown parsing (v11.1.1)
-- **Highlight.js** - Syntax highlighting (v11.9.0)
-- **html2pdf.js** - PDF export functionality (v0.10.1)
+3. Run the JAR:
+   ```bash
+   java -jar target/sourastra-matrimony-1.0.0.jar
+   ```
 
-## 🚀 Performance Optimizations
+### Environment Variables
 
-- **Debounced rendering** - Prevents excessive re-renders
-- **Lazy syntax highlighting** - Only highlights visible code blocks
-- **Efficient state management** - Minimal re-renders
-- **Optimized selectors** - Fast DOM queries
-- **CSS containment** - Improved paint performance
+You can override properties using environment variables:
 
-## 🎯 Use Cases
+```bash
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/sourastra_matrimony_db
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=your_password
+```
 
-Perfect for:
+## Troubleshooting
 
-- 📖 Writing documentation
-- 📝 Taking notes
-- 📄 Creating README files
-- 📧 Drafting emails
-- 📊 Creating reports
-- 🎓 Educational content
-- 💼 Technical writing
+### Database Connection Issues
 
-## 🔮 Future Enhancements
+If you encounter database connection errors:
 
-Potential features for future versions:
+1. Verify PostgreSQL is running:
+   ```bash
+   # On Linux/Mac
+   sudo systemctl status postgresql
 
-- [ ] LaTeX/Math support
-- [ ] Diagram rendering (Mermaid)
-- [ ] Collaborative editing
-- [ ] Cloud sync
-- [ ] Custom themes
-- [ ] Plugin system
-- [ ] Vim/Emacs keybindings
-- [ ] Multiple document tabs
-- [ ] Version history
-- [ ] Spell checker
+   # On Windows
+   Check Services for PostgreSQL
+   ```
 
-## 🤝 Contributing
+2. Check database exists:
+   ```sql
+   \l  -- in psql to list databases
+   ```
 
-Contributions are welcome! Feel free to:
+3. Verify credentials in `application.properties`
+
+### Port Already in Use
+
+If port 8080 is already in use:
+
+1. Change the port in `application.properties`:
+   ```properties
+   server.port=8081
+   ```
+
+2. Or kill the process using the port (Linux/Mac):
+   ```bash
+   lsof -ti:8080 | xargs kill -9
+   ```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 License
+## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
-## 🙏 Acknowledgments
+## Support
 
-- **Marked.js** - For excellent Markdown parsing
-- **Highlight.js** - For beautiful syntax highlighting
-- **html2pdf.js** - For PDF export functionality
-- The open-source community for inspiration
+For support and questions:
 
-## 📧 Support
-
-If you encounter any issues or have questions:
-
-1. Check the keyboard shortcuts (`Ctrl+/`)
-2. Review this README
+1. Check this README for common issues
+2. Review the API documentation above
 3. Open an issue on GitHub
+
+## Acknowledgments
+
+- Spring Boot team for the excellent framework
+- Sourastra community for the inspiration
+- Contributors and users of this application
 
 ---
 
-**Made with ❤️ for the Markdown community**
-
-Happy writing! 🚀
+**Made with ❤️ for the Sourastra community**
