@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Queens Problem - Step by Step Solver</title>
+    <link rel="stylesheet" href="nqueens.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👑 N-Queens Problem Solver</h1>
+            <p class="subtitle">Watch the backtracking algorithm solve the classic chess puzzle step by step</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Controls Section -->
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label for="board-size">Board Size (N):</label>
+                    <input type="number" id="board-size" min="4" max="12" value="8">
+                    <button id="start-btn" class="btn btn-primary">Start Solving</button>
+                    <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                </div>
+
+                <div class="control-group">
+                    <button id="prev-btn" class="btn btn-nav" disabled>← Previous Step</button>
+                    <button id="next-btn" class="btn btn-nav" disabled>Next Step →</button>
+                    <button id="play-btn" class="btn btn-play" disabled>▶ Auto Play</button>
+                    <button id="pause-btn" class="btn btn-pause" disabled style="display:none;">⏸ Pause</button>
+                </div>
+
+                <div class="speed-control">
+                    <label for="speed-slider">Animation Speed:</label>
+                    <input type="range" id="speed-slider" min="100" max="2000" value="500" step="100">
+                    <span id="speed-value">500ms</span>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Step:</span>
+                        <span id="current-step">0</span> / <span id="total-steps">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Queens Placed:</span>
+                        <span id="queens-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Backtracks:</span>
+                        <span id="backtrack-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Status:</span>
+                        <span id="status">Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Board Section -->
+            <div class="board-container">
+                <div id="chessboard"></div>
+            </div>
+
+            <!-- Explanation Section -->
+            <div class="explanation-panel">
+                <h3>Current Step Explanation</h3>
+                <div id="step-explanation" class="explanation-content">
+                    <p>Click "Start Solving" to begin the N-Queens algorithm visualization.</p>
+                </div>
+
+                <div class="algorithm-info">
+                    <h3>How the Algorithm Works</h3>
+                    <ol>
+                        <li><strong>Start:</strong> Begin with an empty board</li>
+                        <li><strong>Place Queen:</strong> Try placing a queen in the first available safe column of the current row</li>
+                        <li><strong>Check Safety:</strong> Verify no other queens can attack this position (same row, column, or diagonal)</li>
+                        <li><strong>Recurse:</strong> If safe, move to the next row and repeat</li>
+                        <li><strong>Backtrack:</strong> If no safe position exists, remove the previous queen and try the next column</li>
+                        <li><strong>Solution:</strong> When all N queens are placed safely, a solution is found!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box queen"></div>
+                <span>Queen Placed</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box trying"></div>
+                <span>Trying Position</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box attacked"></div>
+                <span>Under Attack</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box safe"></div>
+                <span>Safe Position</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="nqueens.js"></script>
+</body>
+</html>

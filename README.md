@@ -5,6 +5,17 @@ A premium, full-featured Markdown editor with real-time preview, built with vani
 ![Markdown Previewer](https://img.shields.io/badge/markdown-editor-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+## 👑 N-Queens Problem Solver
+
+**NEW!** Interactive visualization of the classic N-Queens problem using backtracking algorithm.
+
+- **[Open N-Queens Solver](nqueens.html)** - Visual step-by-step solution
+- Watch the algorithm work in real-time
+- Adjustable board size (4x4 to 12x12)
+- Step-by-step explanations
+- Auto-play with adjustable speed
+- See backtracking in action
+
 ## ✨ Features
 
 ### Core Functionality
